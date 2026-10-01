@@ -8,7 +8,9 @@
     {{ form_errors(registrationForm) }}
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
+        {{ form_row(registrationForm.username, {
+            label: 'username.message'|trans
+        }) }}
         {{ form_row(registrationForm.plainPassword, {
             label: 'password.message'|trans
         }) }}

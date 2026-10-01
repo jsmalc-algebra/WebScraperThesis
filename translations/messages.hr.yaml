@@ -1,3 +1,4 @@
+# Login and registration forms
 logged_in.message: "Prijavljeni ste kao %username%"
 logout.message: "Odjava"
 sign_in_request.message: 'Molimo, prijavite se'
@@ -7,4 +8,9 @@ sign_in.message: "Prijavite se"
 no_account.message: "Nemate račun?"
 register_prompt_caps.message: "REGISTRIRAJTE SE"
 register_prompt_regular.message: "Registrirajte se"
-
+# Main Menu
+main.menu: "Glavni izbornik"
+user.menu: "Dobrodošao korisnik %username%"
+scraping.menu: "Prikupljanje podataka"
+webscraping.menu: "Prikupi podatke s web-stranice na zadanoj URL adresi"
+choose.menu: "Odaberi →"

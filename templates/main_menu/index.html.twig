@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'main.menu'|trans }}{% endblock %}
+
+{% block body %}
+
+    {% if app.user %}
+        <p> {{ 'user.menu'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message'|trans }}</a></p>
+    {% endif %}
+
+    <section>
+        <div class="card-grid">
+            <article>
+                <h3>{{ 'scraping.menu'|trans }}</h3>
+                <p>{{ 'webscraping.menu'|trans }}</p>
+                <a href="#">{{'choose.menu'|trans}}</a>
+            </article>
+        </div>
+    </section>
+
+{% endblock %}
