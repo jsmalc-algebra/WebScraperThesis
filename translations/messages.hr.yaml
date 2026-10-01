@@ -1,0 +1,10 @@
+logged_in.message: "Prijavljeni ste kao %username%"
+logout.message: "Odjava"
+sign_in_request.message: 'Molimo, prijavite se'
+username.message: "Korisničko ime"
+password.message: "Lozinka"
+sign_in.message: "Prijavite se"
+no_account.message: "Nemate račun?"
+register_prompt_caps.message: "REGISTRIRAJTE SE"
+register_prompt_regular.message: "Registrirajte se"
+

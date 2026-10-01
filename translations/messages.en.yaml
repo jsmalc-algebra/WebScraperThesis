@@ -1,0 +1,9 @@
+logged_in.message: "You are logged in as %username%"
+logout.message: "Logout"
+sign_in_request.message: 'Please sign in'
+username.message: "Username"
+password.message: "Password"
+sign_in.message: "Sign in"
+no_account.message: "Don't have an account?"
+register_prompt_caps.message: "REGISTER"
+register_prompt_regular.message: "Register"

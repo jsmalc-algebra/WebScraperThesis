@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ 'logged_in.message'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message' }}</a>
+            </div>
+        {% endif %}
+
+        <h1 class="h3 mb-3 font-weight-normal">{{ 'sign_in_request.message'|trans}}</h1>
+        <label for="username">{{ 'username.message' |trans}}</label>
+        <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" required autofocus>
+        <label for="password">{{ 'password.message' |trans}}</label>
+        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+
+        <button class="btn btn-lg btn-primary" type="submit">
+            {{ 'sign_in.message'|trans }}
+        </button>
+
+        <h1 class="h3 mb-3 font-weight-normal">{{ 'no_account.message'|trans}}</h1>
+        <a href="{{ path('app_register') }}" class="btn btn-lg btn-info">{{ 'register_prompt_caps.message'|trans }}</a>
+    </form>
+{% endblock %}
