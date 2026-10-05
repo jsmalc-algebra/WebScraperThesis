@@ -17,4 +17,6 @@
 
         <button type="submit" class="btn">{{ 'register_prompt_regular.message'|trans }}</button>
     {{ form_end(registrationForm) }}
+
+    <a href="{{ path('app_login') }}" class="btn btn-secondary">{{ 'register_existing_acc.message'|trans }}</a>
 {% endblock %}

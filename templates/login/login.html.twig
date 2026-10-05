@@ -10,7 +10,7 @@
 
         {% if app.user %}
             <div class="mb-3">
-                {{ 'logged_in.message'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message' }}</a>
+                {{ 'logged_in.message'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message'|trans }}</a>
             </div>
         {% endif %}
 

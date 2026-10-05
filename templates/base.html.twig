@@ -33,6 +33,11 @@
                     <span>EN</span>
                 </a>
             </nav>
+            {% if is_granted('ROLE_USER') %}
+                <nav>
+                    <a href="{{ path('app_main_menu') }}">{{ 'main.menu'|trans }}</a>
+                </nav>
+            {% endif %}
         </header>
         {% block body %}{% endblock %}
     </body>

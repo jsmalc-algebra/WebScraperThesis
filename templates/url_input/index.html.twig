@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'title.URL_form'|trans}}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'h1.URL_form'|trans }}</h1>
+
+    {{ form_errors(linkInputForm) }}
+
+    {{ form_start(linkInputForm) }}
+        {{ form_row(linkInputForm.link, {
+            label: 'label.URL_form'|trans
+        }) }}
+
+    <button type="submit" class="btn btn-primary">{{ 'scrape.URL_form'|trans }}</button>
+    {{ form_end(linkInputForm) }}
+{% endblock %}
