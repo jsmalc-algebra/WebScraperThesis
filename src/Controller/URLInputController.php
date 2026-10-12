@@ -18,4 +18,17 @@ final class URLInputController extends AbstractController
             'linkInputForm' => $form,
         ]);
     }
+
+    function normalizeUrl(string $input): string
+    {
+        $input = trim($input);
+
+        // Already has a scheme (http://, ftp://, file://...)? Leave it alone.
+        if (preg_match('~^[a-z][a-z0-9+.-]*://~i', $input)) {
+            return $input;
+        }
+
+        // No scheme: assume https
+        return 'https://' . ltrim($input, '/');
+    }
 }
