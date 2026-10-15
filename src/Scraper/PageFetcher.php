@@ -2,7 +2,6 @@
 namespace App\Scraper;
 
 
-use App\BotIdentity;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class PageFetcher

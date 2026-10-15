@@ -1,12 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Scraper;
 
 use Spatie\Robots\RobotsTxt;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use App\BotIdentity;
 
 final class RobotsGuard
 {
