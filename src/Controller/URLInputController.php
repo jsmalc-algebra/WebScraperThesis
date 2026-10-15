@@ -36,19 +36,11 @@ final class URLInputController extends AbstractController
                 throw new AccessDeniedHttpException(); //TODO: Make this a custom exception
             }
 
-            $cacheKey = 'page_' . sha1($link);
-            $item = $this->cache->getItem($cacheKey);
-
-            if ($item->isHit()) {
-                $html = $item->get();
-            } else {
-                $html = $this->fetcher->fetch($link);
-                $item->set($html);
-                $item->expiresAfter(600);
-                $this->cache->save($item);
-            }
-
-            // TODO: make the scraping results page, and throw $html to it
+            $html = $this->getHtml($link);
+            return $this->render('scrape_reults/index.html.twig', [
+                'html' => $html,
+                'URL' => $link,
+            ]);
 
         }
 
@@ -68,5 +60,21 @@ final class URLInputController extends AbstractController
 
         // No scheme: assume https
         return 'https://' . ltrim($input, '/');
+    }
+
+    function getHtml(string $link): string
+    {
+        $item = $this->cache->getItem('page_' . sha1($link));
+
+        if ($item->isHit()) {
+            $html = $item->get();
+        } else {
+            $html = $this->fetcher->fetch($link);
+            $item->set($html);
+            $item->expiresAfter(600);
+            $this->cache->save($item);
+        }
+
+        return $html;
     }
 }
