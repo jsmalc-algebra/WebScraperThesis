@@ -6,11 +6,10 @@ use Spatie\Robots\RobotsTxt;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\BotIdentity;
 
 final class RobotsGuard
 {
-    public const BOT_TOKEN = 'JsmalcScraper';
-    public const USER_AGENT = 'JsmalcScraper/1.0 (+https://github.com/jsmalc-algebra/WebScraperThesis)';
 
     public function __construct(
         private HttpClientInterface $httpClient,
@@ -23,10 +22,10 @@ final class RobotsGuard
 
         if (!isset($p['scheme'], $p['host']) || !in_array($p['scheme'], ['http', 'https'], true)) {
             throw new \InvalidArgumentException("Not an http(s) URL: $URL");
-        } # If the URL given doesn't start with HTTP or HTTPS, or if the given URL even has a scheme/host
+        } // If the URL given doesn't start with HTTP or HTTPS, or if the given URL even has a scheme/host
 
         $origin = $p['scheme'] . '://' . $p['host'] . (isset($p['port']) ? ':' . $p['port'] : '');
-        # We reconstruct the link down to the root as that is where robots/txt "live"
+        // We reconstruct the link down to the root as that is where robots/txt "live"
 
         $cacheKey = 'robots_' . sha1($origin); # Make the cache label for the robots text of this site
 
@@ -36,15 +35,15 @@ final class RobotsGuard
         };
 
         $body = $this->cache->get($cacheKey, $downloadIfMissing);
-        # Check if we already have robots cached, if not download them
+        // Check if we already have robots cached, if not download them
 
-        return new RobotsTxt($body)->allows($URL, self::BOT_TOKEN);
+        return new RobotsTxt($body)->allows($URL, BotIdentity::BOT_TOKEN);
     }
 
     private function download(string $robotsUrl): string
     {
         $response = $this->httpClient->request('GET', $robotsUrl,[
-            'headers' => ['User-Agent' => self::USER_AGENT],
+            'headers' => ['User-Agent' => BotIdentity::USER_AGENT],
             'timeout' => 10
         ]);
 
@@ -54,7 +53,7 @@ final class RobotsGuard
             return $response->getContent();
         }
         if ($status >= 400 && $status < 500) {
-            return ''; # There is no robots file, meaning we are free to scrape
+            return ''; // There is no robots file, meaning we are free to scrape
         }
 
         throw new \RuntimeException("Could not download robots.txt ($status): $robotsUrl");
