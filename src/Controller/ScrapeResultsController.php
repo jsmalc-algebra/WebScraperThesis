@@ -13,9 +13,11 @@ final class ScrapeResultsController extends AbstractController
 {
 
     #[Route('/results', name: 'app_scrape_results')]
-    public function index(string $html, string $URL ,Request $request): Response
+    public function index(Request $request): Response
     {
         $session = $request->getSession();
+        $html = $session->get('HTML');
+        $URL = $session->get('url');
 
         if ($session->has('tags')) {$tags = TagList::fromArray($session->get('tags'));}
         else {$tags = TagList::defaults();}

@@ -36,12 +36,11 @@ final class URLInputController extends AbstractController
                 throw new AccessDeniedHttpException(); //TODO: Make this a custom exception
             }
 
-            $html = $this->getHtml($link);
-            return $this->render('scrape_reults/index.html.twig', [
-                'html' => $html,
-                'URL' => $link,
-            ]);
+            $session = $request->getSession();
+            $session->set('url', $link);
+            $session->set('HTML',($this->getHtml($link)));
 
+            return $this->redirectToRoute('app_scrape_results');
         }
 
         return $this->render('url_input/index.html.twig', [
