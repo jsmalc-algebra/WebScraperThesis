@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Form\LinkInputFormType;
 use App\Scraper\PageFetcher;
 use App\Scraper\RobotsGuard;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,13 +13,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class URLInputController extends AbstractController
 {
-    public function __construct(
-        private RobotsGuard $guard,
-        private PageFetcher $fetcher,
-        private CacheItemPoolInterface $cache
-    ) {}
+    public function __construct() {}
 
-    #[Route('/enter-url', name: 'URL_input')]
+    #[Route('/scrape', name: 'URL_input')]
     public function index(Request $request): Response
     {
         $form = $this->createForm(LinkInputFormType::class);
@@ -32,13 +27,8 @@ final class URLInputController extends AbstractController
                 $form->getData('link')->getData()
             );
 
-            if (!$this->guard->isAllowed($link)) {
-                throw new AccessDeniedHttpException(); //TODO: Make this a custom exception
-            }
-
             $session = $request->getSession();
             $session->set('url', $link);
-            $session->set('HTML',($this->getHtml($link)));
 
             return $this->redirectToRoute('app_scrape_results');
         }
@@ -60,20 +50,5 @@ final class URLInputController extends AbstractController
         // No scheme: assume https
         return 'https://' . ltrim($input, '/');
     }
-
-    function getHtml(string $link): string
-    {
-        $item = $this->cache->getItem('page_' . sha1($link));
-
-        if ($item->isHit()) {
-            $html = $item->get();
-        } else {
-            $html = $this->fetcher->fetch($link);
-            $item->set($html);
-            $item->expiresAfter(600);
-            $this->cache->save($item);
-        }
-
-        return $html;
-    }
 }
+

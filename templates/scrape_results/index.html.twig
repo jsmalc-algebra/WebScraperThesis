@@ -44,8 +44,7 @@
         <div class="form-floating">
             <h2>
                 {{ 'html.results'|trans }}
-                {# TODO: point at your raw HTML route #}
-                <a href="{{ path('raw_html') }}" target="_blank" rel="noreferrer noopener">{{ 'here.results'|trans }}</a>
+                <a href="{{ path('app_export_html') }}">{{ 'here.results'|trans }}</a>
             </h2>
         </div>
 
@@ -72,7 +71,7 @@
             </div>
 
             <div class="form-floating">
-                <input type="submit" value="{{ 'json.results'|trans }}" name="export" class="btn btn-success w-100 py-2">
+                <a href="{{ path('app_export_json') }}" class="btn btn-success w-100 py-2">{{ 'json.results'|trans }}</a>
             </div>
 
             <div class="seperator"></div>
