@@ -13,8 +13,6 @@ final class MainMenuController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        return $this->render('main_menu/index.html.twig', [
-            'controller_name' => 'MainMenuController',
-        ]);
+        return $this->render('main_menu/index.html.twig');
     }
 }

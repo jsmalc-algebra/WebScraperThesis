@@ -1,20 +1,85 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ScrapeResultsController!{% endblock %}
+{% block title %}{{ 'title.results'|trans }}{% endblock %}
+
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
+    <main class="list-group d-grid gap-2 border-0">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Legion5/PhpstormProjects/Web Scraper/src/Controller/ScrapeResultsController.php</code></li>
-        <li>Your template at <code>C:/Users/Legion5/PhpstormProjects/Web Scraper/templates/scrape_results/index.html.twig</code></li>
-    </ul>
+        <div class="form-floating">
+            <h2 class="p-4"><b>{{ 'scrape_title.results'|trans }} {{ title }}</b></h2>
+        </div>
+
+        <div class="form-floating">
+            <h2 class="p-4">{{ 'explanation.results'|trans }}</h2>
+        </div>
+
+        {# Table sits OUTSIDE the main form: each remove button gets its own tiny form #}
+        <table class="table" style="width: 70%; margin: 0 auto">
+            <thead class="thead-dark">
+                <tr>
+                    <td>{{ 'tag.results'|trans }}</td>
+                    <td>{{ 'amount.results'|trans }}</td>
+                    <td>{{ 'exclude_tag'|trans }}</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.tag }}</td>
+                        <td>{{ row.count }}</td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="remove" value="{{ row.tag }}">
+                                <button type="submit" class="btn btn-link p-0">{{ 'exclude.results'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="form-floating">
+            <h2>
+                {{ 'html.results'|trans }}
+                {# TODO: point at your raw HTML route #}
+                <a href="{{ path('raw_html') }}" target="_blank" rel="noreferrer noopener">{{ 'here.results'|trans }}</a>
+            </h2>
+        </div>
+
+        <div class="seperator"></div>
+
+        <form method="post">
+            <div class="form-floating">
+                <h2>{{ "tags.results"|trans }}</h2>
+            </div>
+
+            <div class="form-floating">
+                <input type="text" name="tag" id="tag" class="form-control" placeholder="{{ 'Please input the tag you wish to scrape'|trans }}">
+                <label for="tag">{{ 'label.results'|trans }}</label>
+            </div>
+
+            <div class="form-floating">
+                <input type="submit" value="{{ 'more.results'|trans }}" name="scrape" class="btn btn-primary w-100 py-2">
+            </div>
+
+            <div class="seperator"></div>
+
+            <div class="form-floating">
+                <h2>{{ 'satisfaction.results'|trans }}</h2>
+            </div>
+
+            <div class="form-floating">
+                <input type="submit" value="{{ 'json.results'|trans }}" name="export" class="btn btn-success w-100 py-2">
+            </div>
+
+            <div class="seperator"></div>
+        </form>
+
+
+        <a href="{{ path('app_main_menu') }}" class="btn btn-danger w-100 py-2">{{ 'menu.results'|trans }}</a>
+    </main>
 </div>
 {% endblock %}
