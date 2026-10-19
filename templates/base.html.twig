@@ -10,6 +10,7 @@
         {% block stylesheets %}
         {% endblock %}
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
@@ -22,23 +23,35 @@
         {% endif %}
     </head>
     <body>
-        <header>
-            <nav>
+        <header class="site-header">
+            <nav class="site-nav">
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_main_menu') }}" class="nav-pill">{{ 'main.menu'|trans }}</a>
+                    <a href="{{ path('URL_input') }}" class="nav-pill">{{ 'scraping.menu'|trans }}</a>
+                {% endif %}
+            </nav>
+            <nav class="site-nav">
                 <a href="/switch-locale/hr" class="language-link">
-                    <span class="fi fi-hr"></span>
-                    <span>HR</span>
+                    <span class="fi fi-hr"></span><span>HR</span>
                 </a>
                 <a href="/switch-locale/en" class="language-link">
-                    <span class="fi fi-gb"></span>
-                    <span>EN</span>
+                    <span class="fi fi-gb"></span><span>EN</span>
                 </a>
             </nav>
-            {% if is_granted('ROLE_USER') %}
-                <nav>
-                    <a href="{{ path('app_main_menu') }}">{{ 'main.menu'|trans }}</a>
-                </nav>
-            {% endif %}
         </header>
-        {% block body %}{% endblock %}
+
+        <main class="container py-4">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {# We add a flash message reneder, curently so that scrape results page can say there were no results #}
+
+            {% block body %}{% endblock %}
+        </main>
     </body>
 </html>

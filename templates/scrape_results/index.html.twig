@@ -41,42 +41,49 @@
             </tbody>
         </table>
 
-        <div class="form-floating">
-            <h2>
-                {{ 'html.results'|trans }}
-                <a href="{{ path('app_export_html') }}">{{ 'here.results'|trans }}</a>
-            </h2>
-        </div>
+        <div class="separator"></div>
 
-        <div class="seperator"></div>
-
+        {# Scrape form: only the tag input and its button #}
         <form method="post">
             <div class="form-floating">
                 <h2>{{ "tags.results"|trans }}</h2>
             </div>
 
-            <div class="form-floating">
+            <div class="form-floating mb-3">
                 <input type="text" name="tag" id="tag" class="form-control" placeholder="{{ 'Please input the tag you wish to scrape'|trans }}">
                 <label for="tag">{{ 'label.results'|trans }}</label>
             </div>
 
-            <div class="form-floating">
-                <input type="submit" value="{{ 'more.results'|trans }}" name="scrape" class="btn btn-primary w-100 py-2">
-            </div>
-
-            <div class="seperator"></div>
-
-            <div class="form-floating">
-                <h2>{{ 'satisfaction.results'|trans }}</h2>
-            </div>
-
-            <div class="form-floating">
-                <a href="{{ path('app_export_json') }}" class="btn btn-success w-100 py-2">{{ 'json.results'|trans }}</a>
-            </div>
-
-            <div class="seperator"></div>
+            <input type="submit" value="{{ 'more.results'|trans }}" name="scrape" class="btn btn-primary w-100 py-2">
         </form>
 
+        <div class="separator"></div>
+
+        {# Export section #}
+
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+                <div class="card h-100 border-success shadow-sm">
+                    <div class="card-body d-flex flex-column text-center">
+                        <div class="export-icon text-success mb-2">{ }</div>
+                        <h3 class="h5 card-title">JSON</h3>
+                        <p class="card-text text-muted small flex-grow-1">{{ 'satisfaction.results'|trans }}</p>
+                        <a href="{{ path('app_export_json') }}" class="btn btn-success w-100 py-2 mt-2">{{ 'json.results'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="card h-100 border-info shadow-sm">
+                    <div class="card-body d-flex flex-column text-center">
+                        <div class="export-icon text-info mb-2">&lt;/&gt;</div>
+                        <h3 class="h5 card-title">HTML</h3>
+                        <p class="card-text text-muted small flex-grow-1">{{ 'html.results'|trans }}</p>
+                        <a href="{{ path('app_export_html') }}" class="btn btn-info w-100 py-2 mt-2">{{ 'html_download.results'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <a href="{{ path('app_main_menu') }}" class="btn btn-danger w-100 py-2">{{ 'menu.results'|trans }}</a>
     </main>

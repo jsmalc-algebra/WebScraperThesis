@@ -5,16 +5,16 @@
 {% block body %}
 
     {% if app.user %}
-        <p> {{ 'user.menu'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message'|trans }}</a></p>
+        <h2 style="text-align: center"> {{ 'user.menu'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message'|trans }}</a></h2>
     {% endif %}
 
     <section>
         <div class="card-grid">
-            <article>
+            <a href="{{ path('URL_input') }}" class="menu-card">
                 <h3>{{ 'scraping.menu'|trans }}</h3>
                 <p>{{ 'webscraping.menu'|trans }}</p>
-                <a href="{{ path('URL_input') }}">{{'choose.menu'|trans}}</a>
-            </article>
+                <span class="menu-card-cta">{{'choose.menu'|trans}}</span>
+            </a>
         </div>
     </section>
 

@@ -43,6 +43,10 @@ final class ScrapeResultsController extends AbstractController
 
         $session->set('tags', $tags->toArray()); // Save the array the class is representing back to the session
 
+        if($request->isMethod('POST')) {
+            return $this->redirectToRoute('app_scrape_results'); // If there were changes to the tags we refresh the page to have them be visible
+        }
+
         $rows = [];
 
         foreach ($tags->toArray() as $tag) {
