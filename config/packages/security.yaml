@@ -1,4 +1,16 @@
 security:
+    role_hierarchy:
+        ROLE_USER : [ ]
+
+        ROLE_FREE:
+            - ROLE_USER
+
+        ROLE_PREMIUM:
+            - ROLE_FREE
+
+        ROLE_ADMIN:
+            - ROLE_PREMIUM
+
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
