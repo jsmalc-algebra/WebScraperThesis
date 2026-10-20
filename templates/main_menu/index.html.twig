@@ -16,6 +16,22 @@
                 <span class="menu-card-cta">{{'choose.menu'|trans}}</span>
             </a>
         </div>
+        <div class="card-grid">
+            <a href="{{ path('app_user_show', {'username':app.user.userIdentifier}) }}" class="menu-card">
+                <h3>{{ 'profile.menu'|trans }}</h3>
+                <p>{{ 'profile_explanation.menu'|trans }}</p>
+                <span class="menu-card-cta">{{'choose.menu'|trans}}</span>
+            </a>
+        </div>
+       {% if  is_granted('ROLE_ADMIN')%}
+           <div class="card-grid">
+               <a href="{{ path('app_user_index') }}" class="menu-card">
+                   <h3>{{ 'index.user'|trans }}</h3>
+                   <p>{{ 'index.menu'|trans }}</p>
+                   <span class="menu-card-cta">{{'choose.menu'|trans}}</span>
+               </a>
+           </div>
+       {% endif %}
     </section>
 
 {% endblock %}

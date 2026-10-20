@@ -15,6 +15,8 @@ user.menu: "Dobrodošao korisnik %username%"
 scraping.menu: "Prikupljanje podataka"
 webscraping.menu: "Prikupi podatke s web-stranice na zadanoj URL adresi"
 choose.menu: "Odaberi →"
+profile.menu: "Profil"
+profile_explanation.menu: "Odite na svoj profil kako bi vidjeli i promijenili stvari poput vašeg korisničkog imena"
 # URL input
 title.URL_form: "Obrazac poveznice web-mjesta"
 h1.URL_form: "Molimo unesite poveznicu web stranice koju želite strugati"
