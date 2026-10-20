@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class MainMenuController extends AbstractController
 {
     #[Route('/', name: 'app_main_menu')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_FREE')]
     public function index(): Response
     {
         return $this->render('main_menu/index.html.twig');

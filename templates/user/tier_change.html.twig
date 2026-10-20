@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'change_tier.user'|trans }}{% endblock %}
+
+<h1>{{ 'change_tier.user'|trans }}</h1>
+
+<form method="POST" action="{{ path('app_user_tier'), {'username':username} }}">
+    <p>
+        {% if  tier === 'ROLE_FREE'%} {{ 'free_message.user'|trans}} {% endif %}
+        {% elseif tier === 'ROLE_PREMIUM' %} {{ 'premium_message.user'|trans}} {% endif %}
+    </p>
+    <p>
+        {% if tier === 'ROLE_FREE' %} {{ 'change_tier_free_question.user'|trans}} {% endif %}
+        {% elseif tier === 'ROLE_PREMIUM' %} {{ 'change_tier_premium_question.user'|trans}} {% endif %}
+    </p>
+    <button>
+        {% if tier === 'ROLE_FREE' %} {{ 'change_tier_free_button.user'|trans}} {% endif %}
+        {% if tier === 'ROLE_PREMIUM' %} {{ 'change_tier_premium_button.user'|trans}} {% endif %}
+    </button>
+</form>

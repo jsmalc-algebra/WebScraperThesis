@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'edit.user'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'edit.user'|trans }}</h1>
+
+    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_user_show',{'username': user.username}) }}">{{ 'back_to_profile.user'|trans }}</a>
+{% endblock %}

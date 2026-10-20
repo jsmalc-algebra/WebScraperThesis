@@ -7,7 +7,9 @@ use App\Repository\UserRepository;
 use App\Form\UserType;
 use App\Security\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\Routing\Attribute\Route;
@@ -52,7 +54,10 @@ final class UserController extends AbstractController
 
     #[Route('/{username}', name: 'app_user_show', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW, subject: 'user')]
-    public function show(User $user): Response
+    public function show(
+        #[MapEntity(mapping: ['username' => 'username'])]
+        User $user
+    ): Response
     {
         return $this->render('user/show.html.twig', [
             'user' => $user,
@@ -61,7 +66,13 @@ final class UserController extends AbstractController
 
     #[Route('/{username}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasher $userPasswordHasher): Response
+    public function edit(
+        Request $request,
+        #[MapEntity(mapping: ['username' => 'username'])]
+        User $user,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasher $userPasswordHasher
+    ): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -81,11 +92,50 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{username}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    #[Route('/{username}/delete', name: 'app_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted(UserVoter::DELETE, subject: 'user')]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasher $userPasswordHasher): Response
+    public function delete(
+        Request $request,
+        #[MapEntity(mapping: ['username' => 'username'])]
+        User $user,
+        EntityManagerInterface $entityManager
+    ): Response
     {
-        //TODO: Implement delete with csrf logic
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        if ($this->isGranted('ROLE_ADMIN')) {return $this->redirectToRoute('app_user_index');}
+        else {return $this->redirectToRoute('app_logout');}
+    }
+
+    #[Route('/{username}/tier', name: 'app_user_tier', methods: ['GET', 'POST'])]
+    #[IsGranted(UserVoter::TIER_CHANGE, subject: 'user')]
+    public function tier_change(
+        Request $request,
+        #[MapEntity(mapping: ['username' => 'username'])]
+        User $user,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        $tier = array_values(array_diff($user->getRoles(), ['ROLE_USER']))[0];
+
+        if ($request->isMethod('POST')) {
+            if ($tier === 'ROLE_FREE') {$user->setRoles(['ROLE_PREMIUM']);}
+            else {$user->setRoles(['ROLE_FREE']);}
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_show', [
+                'username' => $user->getUsername(),
+            ]);
+        }
+
+        return $this->render('user/tier_change.html.twig', [
+            'tier' => $tier,
+            'username' => $user->getUsername(),
+        ]);
     }
 }
 

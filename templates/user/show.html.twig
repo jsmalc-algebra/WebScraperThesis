@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block body %}
+    <h1>{{ user.username ~ "'s" ~ 'profile.user'|trans}}</h1>
+
+    <article>
+        <p>{{ 'username.user'|trans ~ ": " ~ user.username }}</p>
+        {% for role in user.roleEnums %}
+            <p>{{ 'tier.user'|trans ~ ": " ~  role|trans}}</p>
+        {% endfor %}
+    </article>
+
+    <div>
+        <a href="{{ path('app_user_edit') }}" class="btn btn-solid theme-success">{{ 'edit.user' }}</a>
+        {{ include('user/delete_form.html.twig') }}
+        {% if not is_granted('ROLE_ADMIN')%}
+            <a href="{{ path('app_user_tier') }}" class="btn btn-solid theme-warning">{{ 'edit.user' }}</a>
+        {% endif %}
+    </div>
+
+{% endblock %}
