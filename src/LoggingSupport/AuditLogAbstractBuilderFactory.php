@@ -1,17 +1,17 @@
 <?php
 
-namespace App\patterns;
+namespace App\LoggingSupport;
 
-use App\patterns\AuditLogBuilders\AdminUserCreationAuditLogBuilder;
-use App\patterns\AuditLogBuilders\AdminUserDeleteAuditLogBuilder;
-use App\patterns\AuditLogBuilders\AdminUserEditAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserLoginAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserLogoutAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserRegistrationAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserScrapeAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserSelfDeleteAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserSelfEditAuditLogBuilder;
-use App\patterns\AuditLogBuilders\UserTierChangeAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\AdminUserCreationAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\AdminUserDeleteAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\AdminUserEditAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserLoginAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserLogoutAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserRegistrationAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserScrapeAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserSelfDeleteAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserSelfEditAuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilders\UserTierChangeAuditLogBuilder;
 
 class AuditLogAbstractBuilderFactory
 {

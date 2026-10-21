@@ -1,9 +1,9 @@
 <?php
 
-namespace App\patterns\AuditLogBuilders;
+namespace App\LoggingSupport\AuditLogBuilders;
 
 use App\Enum\AuditEvent;
-use App\patterns\AbstractAuditLogBuilder;
+use App\LoggingSupport\AbstractAuditLogBuilder;
 
 class UserLoginAuditLogBuilder extends AbstractAuditLogBuilder
 {

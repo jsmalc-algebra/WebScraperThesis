@@ -1,11 +1,11 @@
 <?php
 
-namespace App\patterns;
+namespace App\LoggingSupport;
 
 use App\Entity\AuditLog;
 use App\Entity\User;
 use App\Enum\AuditEvent;
-use App\patterns\AuditLogBuilder;
+use App\LoggingSupport\AuditLogBuilder;
 
 abstract class AbstractAuditLogBuilder implements AuditLogBuilder
 {
@@ -15,7 +15,7 @@ abstract class AbstractAuditLogBuilder implements AuditLogBuilder
 
     abstract protected function event(): AuditEvent;
 
-    public function reset(): static
+    protected function reset(): static
     {
         $this->user = null;
         $this->details = null;
