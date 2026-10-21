@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\AuditEvent;
 use App\Repository\AuditLogRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,8 +14,8 @@ class AuditLog
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Event = null;
+    #[ORM\Column(length: 255, enumType: AuditEvent::class)]
+    private ?AuditEvent $Event = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $Timetag = null;
@@ -26,31 +27,32 @@ class AuditLog
     private ?string $Details = null;
 
     /**
-     * @param \DateTimeImmutable|null $Timetag
+     * @param AuditEvent|null $Event
+     * @param User|null $User
+     * @param string|null $Details
      */
-    public function __construct()
+    public function __construct(?AuditEvent $Event, ?User $User, ?string $Details)
     {
+        $this->Event = $Event;
         $this->Timetag =new \DateTimeImmutable();
+        $this->User = $User;
+        $this->Details = $Details;
     }
 
-    public static function create(): self
-    {
-        return new self();
-    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEvent(): ?string
+    public function getEvent(): AuditEvent
     {
         return $this->Event;
     }
 
-    public function setEvent(string $Event): static
+    public function setEvent(?AuditEvent $event): static
     {
-        $this->Event = $Event;
+        $this->Event = $event;
 
         return $this;
     }
