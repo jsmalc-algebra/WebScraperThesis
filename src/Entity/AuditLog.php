@@ -15,28 +15,28 @@ class AuditLog
     private ?int $id = null;
 
     #[ORM\Column(length: 255, enumType: AuditEvent::class)]
-    private ?AuditEvent $Event = null;
+    private ?AuditEvent $event = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $Timetag = null;
+    private ?\DateTimeImmutable $timetag = null;
 
     #[ORM\ManyToOne(inversedBy: 'auditLogs')]
-    private ?User $User = null;
+    private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Details = null;
+    private ?string $details = null;
 
     /**
-     * @param AuditEvent|null $Event
-     * @param User|null $User
-     * @param string|null $Details
+     * @param AuditEvent|null $event
+     * @param User|null $user
+     * @param string|null $details
      */
-    public function __construct(?AuditEvent $Event, ?User $User, ?string $Details)
+    public function __construct(?AuditEvent $event, ?User $user, ?string $details)
     {
-        $this->Event = $Event;
-        $this->Timetag =new \DateTimeImmutable();
-        $this->User = $User;
-        $this->Details = $Details;
+        $this->event = $event;
+        $this->timetag =new \DateTimeImmutable();
+        $this->user = $user;
+        $this->details = $details;
     }
 
 
@@ -47,48 +47,48 @@ class AuditLog
 
     public function getEvent(): AuditEvent
     {
-        return $this->Event;
+        return $this->event;
     }
 
     public function setEvent(?AuditEvent $event): static
     {
-        $this->Event = $event;
+        $this->event = $event;
 
         return $this;
     }
 
     public function getTimetag(): ?\DateTimeImmutable
     {
-        return $this->Timetag;
+        return $this->timetag;
     }
 
-    public function setTimetag(\DateTimeImmutable $Timetag): static
+    public function setTimetag(\DateTimeImmutable $timetag): static
     {
-        $this->Timetag = $Timetag;
+        $this->timetag = $timetag;
 
         return $this;
     }
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): static
+    public function setUser(?User $user): static
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }
 
     public function getDetails(): ?string
     {
-        return $this->Details;
+        return $this->details;
     }
 
-    public function setDetails(?string $Details): static
+    public function setDetails(?string $details): static
     {
-        $this->Details = $Details;
+        $this->details = $details;
 
         return $this;
     }

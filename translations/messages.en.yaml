@@ -60,5 +60,7 @@ premium_message.user: "You are currently on the premium tier"
 change_tier_premium_question.user: "Do you wish to downgrade?"
 change_tier_free_button.user: "Upgrade to premium!"
 change_tier_premium_button.user: "Downgrade to free!"
+# Logs
+title.logs: "Audit log overview"
 
 

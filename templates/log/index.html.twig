@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Logs{% endblock %}
+
+{% block body %}
+    <main class="log-page">
+        <h1>Logs</h1>
+
+        <details class="log-filters">
+            <summary>Filters</summary>
+
+            <form method="post" action="{{ app.request.pathInfo }}">
+                <div class="log-field">
+                    <label for="filter-event">Event</label>
+                    <select id="filter-event" name="event">
+                        <option value="">All events</option>
+                        {% for event in events %}
+                            {# Works for both enum cases and plain strings #}
+                            {% set eventValue = event.value ?? event %}
+                            <option value="{{ eventValue }}">{{ eventValue }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="log-field">
+                    <label for="filter-user">User</label>
+                    <select id="filter-user" name="user">
+                        <option value="">All users</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.id }}-{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="log-field">
+                    <label for="filter-from">From</label>
+                    <input type="datetime-local" id="filter-from" name="from">
+                </div>
+
+                <div class="log-field">
+                    <label for="filter-to">To</label>
+                    <input type="datetime-local" id="filter-to" name="to">
+                </div>
+
+                <div class="log-filters__actions">
+                    <button type="submit">Apply filters</button>
+                    <a href="{{ app.request.pathInfo }}">Clear filters</a>
+                </div>
+            </form>
+        </details>
+
+        <div class="log-table-wrap">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Event</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">User ID</th>
+                        <th scope="col">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td class="log-num">{{ log.id }}</td>
+                            <td class="log-nowrap">{{ log.event.value }}</td>
+                            <td class="log-nowrap log-num">{{ log.timetag|date('d-m-Y H:i') }}</td>
+                            <td class="log-num">{{ log.user.id }}</td>
+                            <td class="log-details">{{ log.details }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="log-empty">No logs found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+{% endblock %}
