@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\LinkInputFormType;
+use App\LoggingSupport\LoggingActions;
 use App\Scraper\PageFetcher;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -15,12 +16,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class URLInputController extends AbstractController
 {
     public function __construct(
-        private readonly PageFetcher $pageFetcher,
-        private TranslatorInterface $translator,
+        private readonly PageFetcher         $pageFetcher,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     #[Route('/scrape', name: 'URL_input')]
-    public function index(Request $request): Response
+    public function index(Request $request,LoggingActions $logger): Response
     {
         $form = $this->createForm(LinkInputFormType::class);
 
@@ -34,6 +35,8 @@ final class URLInputController extends AbstractController
             try {
                 $this->pageFetcher->fetch($link);
                 $request->getSession()->set('url', $link);
+
+                $logger->userScrape("URL: $link");
 
                 return $this->redirectToRoute('app_scrape_results');
             } catch (AccessDeniedHttpException) {
