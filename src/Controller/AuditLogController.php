@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\AuditLog;
-use App\Entity\User;
 use App\Enum\AuditEvent;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
-use DateTimeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,43 +17,35 @@ final class AuditLogController extends AbstractController
     {
         if ($request->isMethod(Request::METHOD_GET)) {
             $logs = $auditLogRepository->findAll();
-            $users = $userRepository->findAll();
-            $events = array_column(AuditEvent::cases(), 'name');
+        } else {
+            $event=$user=$from=$from=$to=null;
 
+           if ($request->request->getString("event") !== '') {
+               $event = AuditEvent::tryFrom($request->request->getString("event"));
+           }
 
-        } else {throw new \LogicException(`Yet to be implemented`);}
+           if ($request->request->getString("user") !== '') {
+               $user = $userRepository->find($request->request->getString("user")[0]);
+           }
+
+           if ($request->request->getString("from") !== '') {
+               $from = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $request->request->getString("from"));
+           }
+
+           if ($request->request->getString("to") !== '') {
+               $to = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $request->request->getString("to"));
+           }
+
+           $logs = $auditLogRepository->findFiltered($user, $from, $to, $event);
+        }
+
+        $users = $userRepository->findAll();
+        $events = array_column(AuditEvent::cases(), 'name');
 
         return $this->render('log/index.html.twig', [
             'logs' => $logs,
             'users' => $users,
             'events' => $events,
         ]);
-    }
-
-    public function filterByEvent(array $logs,AuditEvent $auditEvent) : array
-    {
-        return array_filter(
-            $logs,
-            fn (AuditLog $log) => $log->getEvent() === $auditEvent
-        );
-    }
-
-    public function filterByUser(array $logs, User $user) : array
-    {
-        return array_filter(
-            $logs,
-            fn (AuditLog $log) => $log->getUser() === $user
-        );
-    }
-
-    public function filterBetweenDates(array $logs, DateTimeInterface $from, DateTimeInterface $to) : array
-    {
-        $start = \DateTimeImmutable::createFromInterface($from)->setTime(0, 0);
-        $end = \DateTimeImmutable::createFromInterface($to)->setTime(0, 0)->modify('+1 day');
-
-        return array_filter(
-            $logs,
-            fn(AuditLog $log) => $log->getTimetag() >= $start and $log->getTimetag() <= $end
-        );
     }
 }
