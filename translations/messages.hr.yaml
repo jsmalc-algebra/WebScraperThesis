@@ -17,6 +17,8 @@ webscraping.menu: "Prikupi podatke s web-stranice na zadanoj URL adresi"
 choose.menu: "Odaberi →"
 profile.menu: "Profil"
 profile_explanation.menu: "Odite na svoj profil kako bi vidjeli i promijenili stvari poput vašeg korisničkog imena"
+logs.menu: "Pristupite revizijskim zapisima i pregledajte radnje korisnika"
+index.menu: "Pristup popisu korisnika s mogućnošću promjene bilo kojeg"
 # URL input
 title.URL_form: "Obrazac poveznice web-mjesta"
 h1.URL_form: "Molimo unesite poveznicu web stranice koju želite strugati"
@@ -60,5 +62,6 @@ premium_message.user: "Trenutno ste na premium razini."
 change_tier_premium_question.user: "Želite li je unazaditi?"
 change_tier_free_button.user: "Nadogradite na premium razinu!"
 change_tier_premium_button.user: "Unazadite ne besplatnu razinu!"
-
+# Logs
+title.logs: "Pregled zapisnika revizije"
 

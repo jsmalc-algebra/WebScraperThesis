@@ -3,7 +3,7 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block body %}
-    <h1>{{ user.username ~ "'s" ~ 'profile.user'|trans}}</h1>
+    <h1>{{ user.username ~ "'s " ~ 'profile.user'|trans}}</h1>
 
     <article>
         <p>{{ 'username.user'|trans ~ ": " ~ user.username }}</p>
@@ -13,10 +13,10 @@
     </article>
 
     <div>
-        <a href="{{ path('app_user_edit') }}" class="btn btn-solid theme-success">{{ 'edit.user' }}</a>
+        <a href="{{ path('app_user_edit', {'username': user.username}) }}" class="btn btn-success">{{ 'edit.user'|trans }}</a>
         {{ include('user/delete_form.html.twig') }}
         {% if not is_granted('ROLE_ADMIN')%}
-            <a href="{{ path('app_user_tier') }}" class="btn btn-solid theme-warning">{{ 'edit.user' }}</a>
+            <a href="{{ path('app_user_tier',{'username': user.username}) }}" class="btn btn-warning">{{ 'change_tier.user'|trans }}</a>
         {% endif %}
     </div>
 

@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +33,11 @@ final class UserController extends AbstractController
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasher $userPasswordHasher): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $userPasswordHasher
+    ): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -76,7 +80,7 @@ final class UserController extends AbstractController
         #[MapEntity(mapping: ['username' => 'username'])]
         User $user,
         EntityManagerInterface $entityManager,
-        UserPasswordHasher $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher
     ): Response
     {
         $form = $this->createForm(UserType::class, $user);

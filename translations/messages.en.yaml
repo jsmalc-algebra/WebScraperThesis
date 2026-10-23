@@ -17,6 +17,7 @@ choose.menu: "Choose →"
 profile.menu: "Profile"
 profile_explanation.menu: "Go to your profile to see and change things such as your username"
 index.menu: "Access user list with the ability to change any"
+logs.menu: "Access the audit logs and see user actions"
 # URL input
 title.URL_form: "Website URL form"
 h1.URL_form: "Please enter the URL of the web page you wish to scrape"

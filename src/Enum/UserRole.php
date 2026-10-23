@@ -13,6 +13,6 @@ enum UserRole: string implements TranslatableInterface
 
     public function trans(TranslatorInterface $translator, ?string $locale = null): string
     {
-        return $translator->trans('role.'. $this->value, [], 'roles', $locale);
+        return $translator->trans($this->value, [], 'roles', $locale);
     }
 }

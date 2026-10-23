@@ -26,12 +26,26 @@
         <header class="site-header">
             <nav class="site-nav">
                 {% if is_granted('ROLE_USER') %}
-                    <a href="{{ path('app_main_menu') }}" class="nav-pill">{{ 'main.menu'|trans }}</a>
-                    <a href="{{ path('URL_input') }}" class="nav-pill">{{ 'scraping.menu'|trans }}</a>
-                    <a href="{{ path('app_user_show', {'username':app.user.userIdentifier}) }}" class="nav-pill">{{ 'profile.menu'|trans }}</a>
+
+                    {% if app.current_route != 'app_main_menu' %}
+                        <a href="{{ path('app_main_menu') }}" class="nav-pill">{{ 'main.menu'|trans }}</a>
+                    {% endif %}
+
+                    {% if app.current_route != 'URL_input' %}
+                        <a href="{{ path('URL_input') }}" class="nav-pill">{{ 'scraping.menu'|trans }}</a>
+                    {% endif %}
+
+                    {% if app.current_route != 'app_user_show' %}
+                        <a href="{{ path('app_user_show', {'username':app.user.userIdentifier}) }}" class="nav-pill">{{ 'profile.menu'|trans }}</a>
+                    {% endif %}
 
                     {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_user_index') }}" class="nav-pill">{{ 'index.user'|trans }}</a>
+
+                        {% if app.current_route != 'app_user_index' %}
+                            <a href="{{ path('app_user_index') }}" class="nav-pill">{{ 'index.user'|trans }}</a>
+                        {% endif %}
+
+
                     {% endif %}
                 {% endif %}
             </nav>
