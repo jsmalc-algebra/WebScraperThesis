@@ -44,7 +44,7 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) { #TODO: Add validation that username is unique
-            $plainPassword = $form->get('password')->getData();
+            $plainPassword = $form->get('plainPassword')->getData();
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $entityManager->persist($user);
@@ -83,16 +83,18 @@ final class UserController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher
     ): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $oldUsername = $user->getUsername();
+        $form = $this->createForm(UserType::class, $user, ['require_password'=>false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('password')->getData();
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            if ($plainPassword) {$user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));}
 
             $entityManager->flush();
 
-        $this->userEditLogger($form, $user);
+        $this->userEditLogger($form, $user, $oldUsername);
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -159,20 +161,20 @@ final class UserController extends AbstractController
         ]);
     }
 
-    public function userEditLogger(FormInterface $form, User $user): void
+    public function userEditLogger(FormInterface $form, User $user, string $oldUsername): void
     {
         $details = "";
 
-        if (!empty($form->get('username')->getData())) {
-            $details = $details."USERNAME CHANGED TO: " . $form->get('username')->getData()->getUsername()."\n";
+        if ($user->getUsername() !== $oldUsername) {
+            $details = $details."USERNAME CHANGED TO: " . $form->get('username')->getData()."\n";
         }
 
-        if (!empty($form->get('password')->getData())) {
+        if (!empty($form->get('plainPassword')->getData())) {
             $details = $details."PASSWORD CHANGED \n";
         }
 
         if ($form->has('roles') && !empty($form->get('roles')->getData())) {
-            $details = $details."ROLE CHANGED TO: " . $form->get('roles')->getData()->getRole()."\n";
+            $details = $details."ROLE CHANGED TO: " . $form->get('roles')->getData()[0]."\n";
         }
 
         if ($this->isGranted('ROLE_ADMIN')) {

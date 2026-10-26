@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AuditLog;
 use App\Enum\AuditEvent;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
@@ -20,8 +21,9 @@ final class AuditLogController extends AbstractController
 
         if (!$request->query->has('filter')) {
             $logs = $auditLogRepository->findAll();
+            $log = usort($logs, fn (AuditLog $a, AuditLog $b) => $b->getId() <=> $a->getId());
         } else {
-            dump("request: ",$request->query->all());
+            //dump("request: ",$request->query->all());
             $event=$user=$from=$to=null;
 
            if ($request->query->getString("event") !== '') {
@@ -43,7 +45,7 @@ final class AuditLogController extends AbstractController
            }
 
            $logs = $auditLogRepository->findFiltered($event,$user, $from, $to);
-           dump("Logs: ",$logs); //Debug
+           //dump("Logs: ",$logs); //Debug
         }
 
         $users = $userRepository->findAll();

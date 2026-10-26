@@ -44,6 +44,7 @@ exclude_tag: "ISKLJUČI OZNAKU"
 robots.error: "Robots.txt ove stranice ne dopušta automatsko prikupljanje i grebanje podataka sa nje."
 # User pages
 index.user: "Indeks korisnika"
+index_return.user: "Povratak na indeks korisnika"
 username.user : "Korisničko ime"
 roles.user: "Uloge"
 profile.user: "Profil"

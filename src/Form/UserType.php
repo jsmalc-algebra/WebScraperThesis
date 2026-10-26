@@ -5,11 +5,13 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
@@ -20,9 +22,13 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('password', PasswordType::class,[
-                'required' => false,
+            ->add('plainPassword', PasswordType::class,[
                 'always_empty' => true,
+                'mapped' => false,
+                'required' => $options['require_password'],
+                'constraints' => $options['require_password']
+                    ? [new NotBlank(message: 'Password is required.')]
+                    : [],
             ]);
 
         if ($this->security->isGranted('ROLE_ADMIN')){
@@ -34,8 +40,13 @@ class UserType extends AbstractType
                         'Free' => 'ROLE_FREE',
                     ],
                     'multiple' => false,
-                    'expanded' => false,
+                    'expanded' => true,
                 ]);
+
+            $builder->get('roles')->addModelTransformer(new CallbackTransformer(
+                fn (?array $rolesArray) => $rolesArray[0] ?? null,
+                fn (?string $roleString) => $roleString ? [$roleString] : []
+            ));
         }
     }
 
@@ -43,6 +54,7 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'require_password' => true
         ]);
     }
 }

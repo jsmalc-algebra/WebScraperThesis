@@ -88,6 +88,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    public function getRole(): ?string
+    {
+        return $this->roles[0] ?? null;
+    }
+
     public function getRoleEnums(): array
     {
         return array_values(array_filter(
@@ -109,6 +114,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles[] = $role;
 
+        return $this;
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->roles = [$role];
         return $this;
     }
 
