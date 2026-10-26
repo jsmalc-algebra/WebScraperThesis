@@ -4,7 +4,7 @@ trigger:
             - master
 
 variables:
-    phpVersion: 8.3
+    phpVersion: 8.4
     dockerRegistryServiceConnection: 'scraper-thesis-connection'
     imageRepository: 'thesis-scraper'
     dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
