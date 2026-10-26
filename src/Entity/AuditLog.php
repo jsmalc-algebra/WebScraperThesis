@@ -21,10 +21,14 @@ class AuditLog
     private ?\DateTimeImmutable $timetag = null;
 
     #[ORM\ManyToOne(inversedBy: 'auditLogs')]
-    private ?User $user = null;
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?User $user = null; // Live relation
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $details = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $originalUserId = null; // Backup for reading after user deletion
 
     /**
      * @param AuditEvent|null $event
@@ -36,6 +40,7 @@ class AuditLog
         $this->event = $event;
         $this->timetag =new \DateTimeImmutable();
         $this->user = $user;
+        $this->originalUserId = $user->getId();
         $this->details = $details;
     }
 
@@ -89,6 +94,18 @@ class AuditLog
     public function setDetails(?string $details): static
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    public function getOriginalUserId(): ?int
+    {
+        return $this->originalUserId;
+    }
+
+    public function setOriginalUserId(?int $originalUserId): static
+    {
+        $this->originalUserId = $originalUserId;
 
         return $this;
     }

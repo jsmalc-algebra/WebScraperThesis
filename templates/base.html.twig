@@ -45,6 +45,9 @@
                             <a href="{{ path('app_user_index') }}" class="nav-pill">{{ 'index.user'|trans }}</a>
                         {% endif %}
 
+                        {% if app.current_route != 'app_log' %}
+                            <a href="{{ path('app_log') }}" class="nav-pill">{{ 'title.logs'|trans }}</a>
+                        {% endif %}
 
                     {% endif %}
                 {% endif %}

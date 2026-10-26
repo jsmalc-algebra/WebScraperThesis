@@ -66,7 +66,7 @@
                             <td class="log-num">{{ log.id }}</td>
                             <td class="log-nowrap">{{ log.event.value }}</td>
                             <td class="log-nowrap log-num">{{ log.timetag|date('d-m-Y H:i') }}</td>
-                            <td class="log-num">{{ log.user.id }}</td>
+                            <td class="log-num">{{ log.originalUserId}}</td>
                             <td class="log-details">{{ log.details }}</td>
                         </tr>
                     {% else %}
