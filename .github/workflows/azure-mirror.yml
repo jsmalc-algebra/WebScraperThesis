@@ -1,0 +1,39 @@
+
+name: Mirror to Azure DevOps
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Push branches and tags to Azure DevOps
+        env:
+          AZURE_DEVOPS_URL: ${{ secrets.AZURE_DEVOPS_URL }}
+          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        run: |
+          set -eu
+
+          BASIC_AUTH=$(printf ':%s' "$AZURE_DEVOPS_PAT" | base64 -w 0)
+
+          git remote add azure "$AZURE_DEVOPS_URL"
+
+          git -c http.extraheader="AUTHORIZATION: basic $BASIC_AUTH" \
+            push azure --all
+
+          git -c http.extraheader="AUTHORIZATION: basic $BASIC_AUTH" \
+            push azure --tags
