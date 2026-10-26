@@ -95,16 +95,19 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "8.1.*"
+            "require": "8.1.*",
+            "docker": false
         }
     },
     "require-dev": {
+        "dbrekelmans/bdi": "^1.4",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "phpunit/phpunit": "^13.4.3",
         "symfony/browser-kit": "8.1.*",
         "symfony/css-selector": "8.1.*",
         "symfony/debug-bundle": "8.1.*",
         "symfony/maker-bundle": "^1.0",
+        "symfony/panther": "^2.4",
         "symfony/stopwatch": "8.1.*",
         "symfony/web-profiler-bundle": "8.1.*"
     }
