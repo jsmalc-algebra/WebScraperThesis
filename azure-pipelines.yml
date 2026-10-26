@@ -1,0 +1,161 @@
+trigger:
+    branches:
+        include:
+            - master
+
+variables:
+    phpVersion: 8.3
+    dockerRegistryServiceConnection: 'applied-devops-connection'
+    imageRepository: 'thesis-scraper'
+    dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+    tag: '$(Build.BuildId)'
+    webserverDockerfilePath: '$(Build.SourcesDirectory)/docker/nginx/Dockerfile'
+    webserverImageRepository: 'thesis-scraper-webserver'
+
+stages:
+
+    - stage: Test
+      displayName: 'Test - standard test suite'
+      dependsOn: []
+      jobs:
+          - job: Test
+            pool:
+                vmImage: ubuntu-latest
+            services:
+                mysql:
+                    image: mysql:8.0
+                    env:
+                        MYSQL_ROOT_PASSWORD: root
+                        MYSQL_DATABASE: web_scraper
+                    ports:
+                        - 3306:3306
+                    options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+            steps:
+                - script: |
+                      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+                      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+                      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+                      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+                      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+                      php -version
+                  displayName: 'Use PHP version $(phpVersion)'
+
+                - script: composer install --no-interaction --prefer-dist --ignore-platform-req=ext-redis
+                  displayName: 'composer install'
+
+                - script: |
+                      echo "DATABASE_URL=mysql://root:root@127.0.0.1:3306/web_scraper" >> .env.test.local
+                  displayName: 'Configure test database URL'
+
+                - script: mysql -uroot -proot -h127.0.0.1 -e "CREATE DATABASE IF NOT EXISTS web_scraper_test;"
+                  displayName: 'Create test database'
+
+                - script: php bin/console doctrine:migrations:migrate --env=test --no-interaction
+                  displayName: 'Run migrations'
+
+                - script: php bin/phpunit --testsuite=standard --log-junit $(Agent.TempDirectory)/test-results.xml
+                  displayName: 'Run PHPUnit'
+
+                - task: PublishTestResults@2
+                  inputs:
+                      testResultsFormat: 'JUnit'
+                      testResultsFiles: '$(Agent.TempDirectory)/test-results.xml'
+                  displayName: 'Publish test results'
+                  condition: always()
+
+    - stage: PantherTest
+      displayName: 'Test - Panther (E2E) test suite'
+      dependsOn: []
+      jobs:
+          - job: PantherTest
+            pool:
+                vmImage: ubuntu-latest
+            services:
+                mysql:
+                    image: mysql:8.0
+                    env:
+                        MYSQL_ROOT_PASSWORD: root
+                        MYSQL_DATABASE: web_scraper
+                    ports:
+                        - 3306:3306
+                    options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+            steps:
+                - script: |
+                      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+                      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+                      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+                      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+                      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+                      php -version
+                  displayName: 'Use PHP version $(phpVersion)'
+
+                - script: composer install --no-interaction --prefer-dist --ignore-platform-req=ext-redis
+                  displayName: 'composer install'
+
+                - script: |
+                      echo "DATABASE_URL=mysql://root:root@127.0.0.1:3306/web_scraper" >> .env.test.local
+                  displayName: 'Configure test database URL'
+
+                - script: mysql -uroot -proot -h127.0.0.1 -e "CREATE DATABASE IF NOT EXISTS web_scraper_test;"
+                  displayName: 'Create test database'
+
+                - script: php bin/console doctrine:migrations:migrate --env=test --no-interaction
+                  displayName: 'Run migrations'
+
+                - script: |
+                      google-chrome --version || ( \
+                        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+                        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' && \
+                        sudo apt-get update && \
+                        sudo apt-get install -y google-chrome-stable \
+                      )
+                  displayName: 'Ensure Google Chrome is installed'
+
+                - script: vendor/bin/bdi detect drivers
+                  displayName: 'Install matching chromedriver (Panther)'
+
+                - script: php bin/phpunit --testsuite=panther --log-junit $(Agent.TempDirectory)/panther-test-results.xml
+                  displayName: 'Run Panther tests'
+                  env:
+                      PANTHER_NO_SANDBOX: 1
+
+                - task: PublishTestResults@2
+                  inputs:
+                      testResultsFormat: 'JUnit'
+                      testResultsFiles: '$(Agent.TempDirectory)/panther-test-results.xml'
+                  displayName: 'Publish Panther test results'
+                  condition: always()
+
+    - stage: BuildAndPush
+      displayName: 'Build and push image'
+      dependsOn:
+          - Test
+          - PantherTest
+      condition: succeeded()
+      jobs:
+          - job: BuildAndPush
+            pool:
+                vmImage: ubuntu-latest
+            steps:
+                - task: Docker@2
+                  displayName: 'Build and push Docker image'
+                  inputs:
+                      containerRegistry: '$(dockerRegistryServiceConnection)'
+                      repository: '$(imageRepository)'
+                      command: 'buildAndPush'
+                      Dockerfile: '$(dockerfilePath)'
+                      tags: |
+                          $(tag)
+                          latest
+
+                - task: Docker@2
+                  displayName: 'Build and push webserver image'
+                  inputs:
+                      containerRegistry: '$(dockerRegistryServiceConnection)'
+                      repository: '$(webserverImageRepository)'
+                      command: 'buildAndPush'
+                      Dockerfile: '$(webserverDockerfilePath)'
+                      buildContext: '$(Build.SourcesDirectory)'
+                      tags: |
+                          $(tag)
+                          latest
