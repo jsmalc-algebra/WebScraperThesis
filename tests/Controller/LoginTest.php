@@ -36,6 +36,7 @@ class LoginTest extends WebTestCase
         $user = new User();
         $user->setUsername(self::TEST_USERNAME);
         $user->setPassword($hasher->hashPassword($user, self::TEST_PASSWORD));
+        $user->appendRole('ROLE_FREE');
 
         $em->persist($user);
         $em->flush();
