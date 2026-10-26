@@ -9,7 +9,7 @@
         <details class="log-filters">
             <summary>Filters</summary>
 
-            <form method="post" action="{{ app.request.pathInfo }}">
+            <form method="get" action="{{ app.request.pathInfo }}">
                 <div class="log-field">
                     <label for="filter-event">Event</label>
                     <select id="filter-event" name="event">
@@ -34,16 +34,16 @@
 
                 <div class="log-field">
                     <label for="filter-from">From</label>
-                    <input type="datetime-local" id="filter-from" name="from">
+                    <input type="date" id="filter-from" name="from">
                 </div>
 
                 <div class="log-field">
                     <label for="filter-to">To</label>
-                    <input type="datetime-local" id="filter-to" name="to">
+                    <input type="date" id="filter-to" name="to">
                 </div>
 
                 <div class="log-filters__actions">
-                    <button type="submit">Apply filters</button>
+                    <button type="submit" name="filter" value="true">Apply filters</button>
                     <a href="{{ app.request.pathInfo }}">Clear filters</a>
                 </div>
             </form>
@@ -66,7 +66,15 @@
                             <td class="log-num">{{ log.id }}</td>
                             <td class="log-nowrap">{{ log.event.value }}</td>
                             <td class="log-nowrap log-num">{{ log.timetag|date('d-m-Y H:i') }}</td>
-                            <td class="log-num">{{ log.originalUserId}}</td>
+                                    <td class="log-num">
+                                        {% if log.user != null %}
+                                        <a href="{{ path('app_user_show', {'username': log.user.username}) }}">
+                                            {{ log.originalUserId}}
+                                        </a>
+                                        {% else %}
+                                            {{ log.originalUserId }}
+                                        {% endif %}
+                                    </td>
                             <td class="log-details">{{ log.details }}</td>
                         </tr>
                     {% else %}

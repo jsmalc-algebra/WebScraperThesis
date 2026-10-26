@@ -14,35 +14,40 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class AuditLogController extends AbstractController
 {
-    #[Route('/logs', name: 'app_log', methods: ['POST','GET'])]
+    #[Route('/logs', name: 'app_log', methods: ['GET'])]
     public function index(AuditLogRepository $auditLogRepository, UserRepository $userRepository, Request $request): Response
     {
-        if ($request->isMethod(Request::METHOD_GET)) {
+
+        if (!$request->query->has('filter')) {
             $logs = $auditLogRepository->findAll();
         } else {
-            $event=$user=$from=$from=$to=null;
+            dump("request: ",$request->query->all());
+            $event=$user=$from=$to=null;
 
-           if ($request->request->getString("event") !== '') {
-               $event = AuditEvent::tryFrom($request->request->getString("event"));
+           if ($request->query->getString("event") !== '') {
+               $event = AuditEvent::tryFrom($request->query->getString("event"));
            }
 
-           if ($request->request->getString("user") !== '') {
-               $user = $userRepository->find($request->request->getString("user")[0]);
+           if ($request->query->getString("user") > 0) {
+               $user = $userRepository->findById($request->query->getInt("user"));
+               //dump("User: ",$user);
            }
 
-           if ($request->request->getString("from") !== '') {
-               $from = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $request->request->getString("from"));
+           if ($request->query->getString("from") !== '') {
+               $from = \DateTimeImmutable::createFromFormat('!Y-m-d', $request->query->getString("from"));
            }
 
-           if ($request->request->getString("to") !== '') {
-               $to = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $request->request->getString("to"));
+           if ($request->query->getString("to") !== '') {
+               $to = \DateTimeImmutable::createFromFormat('!Y-m-d', $request->query->getString("to"));
+               $to = $to ? $to->setTime(23, 59, 59) : null;
            }
 
-           $logs = $auditLogRepository->findFiltered($user, $from, $to, $event);
+           $logs = $auditLogRepository->findFiltered($event,$user, $from, $to);
+           dump("Logs: ",$logs); //Debug
         }
 
         $users = $userRepository->findAll();
-        $events = array_column(AuditEvent::cases(), 'name');
+        $events = array_column(AuditEvent::cases(), 'value');
 
         return $this->render('log/index.html.twig', [
             'logs' => $logs,

@@ -53,7 +53,7 @@ class AuditLogRepository extends ServiceEntityRepository
 
     public function findFiltered(?AuditEvent $auditEvent, ?User $user, ?\DateTimeImmutable $start, ?\DateTimeImmutable $end): array
     {
-        $qb = $this->createQueryBuilder('a')->orderBy('a.timetag', 'DESC');
+        $qb = $this->createQueryBuilder('a')->orderBy('a.id', 'DESC');
 
         if ($auditEvent !== null) {$qb ->andWhere('a.event = :event')->setParameter('event', $auditEvent->value);}
         if($user !== null) {$qb ->andWhere('a.user = :user')->setParameter('user', $user);}
