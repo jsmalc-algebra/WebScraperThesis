@@ -3,21 +3,36 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block body %}
-    <h1>{{ user.username ~ "'s " ~ 'profile.user'|trans}}</h1>
+    <article class="profile-page">
+        <div class="profile-banner"></div>
 
-    <article>
-        <p>{{ 'username.user'|trans ~ ": " ~ user.username }}</p>
-        {% for role in user.roleEnums %}
-            <p>{{ 'tier.user'|trans ~ ": " ~  role|trans}}</p>
-        {% endfor %}
+        <div class="profile-body">
+            {# Avatar = first letter of the username #}
+            <div class="profile-avatar" aria-hidden="true">{{ user.username|first|upper }}</div>
+
+            <h1 class="profile-name">{{ user.username ~ "'s " ~ 'profile.user'|trans }}</h1>
+
+            <dl class="profile-details">
+                <dt>{{ 'username.user'|trans }}</dt>
+                <dd>{{ user.username }}</dd>
+
+                {% if user.roleEnums is not empty %}
+                    <dt>{{ 'tier.user'|trans }}</dt>
+                    <dd>
+                        {% for role in user.roleEnums %}
+                            <span class="badge rounded-pill text-bg-primary">{{ role|trans }}</span>
+                        {% endfor %}
+                    </dd>
+                {% endif %}
+            </dl>
+
+            <div class="profile-actions">
+                <a href="{{ path('app_user_edit', {'username': user.username}) }}" class="btn btn-success">{{ 'edit.user'|trans }}</a>
+                {% if not is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_user_tier', {'username': user.username}) }}" class="btn btn-warning">{{ 'change_tier.user'|trans }}</a>
+                {% endif %}
+                {{ include('user/delete_form.html.twig') }}
+            </div>
+        </div>
     </article>
-
-    <div>
-        <a href="{{ path('app_user_edit', {'username': user.username}) }}" class="btn btn-success">{{ 'edit.user'|trans }}</a>
-        {{ include('user/delete_form.html.twig') }}
-        {% if not is_granted('ROLE_ADMIN')%}
-            <a href="{{ path('app_user_tier',{'username': user.username}) }}" class="btn btn-warning">{{ 'change_tier.user'|trans }}</a>
-        {% endif %}
-    </div>
-
 {% endblock %}

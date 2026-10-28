@@ -1,4 +1,9 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{# Self-contained Bootstrap 5 styling, so it works even if form_themes isn't set in twig.yaml #}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+<div class="form-panel">
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary w-100 py-2 mt-2">{{ button_label|default('Save') }}</button>
+    {{ form_end(form) }}
+</div>

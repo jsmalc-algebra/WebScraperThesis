@@ -5,87 +5,84 @@
 
 {% block body %}
 
-<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
-    <main class="list-group d-grid gap-2 border-0">
+{# base.html.twig already provides <main>, so this is a <section> #}
+<section class="results-page">
 
-        <div class="form-floating">
-            <h2 class="p-4"><b>{{ 'scrape_title.results'|trans }} {{ title }}</b></h2>
-        </div>
+    <header class="mb-4">
+        <h1 class="results-title">{{ 'scrape_title.results'|trans }} {{ title }}</h1>
+        <p class="results-lead">{{ 'explanation.results'|trans }}</p>
+    </header>
 
-        <div class="form-floating">
-            <h2 class="p-4">{{ 'explanation.results'|trans }}</h2>
-        </div>
-
-        {# Table sits OUTSIDE the main form: each remove button gets its own tiny form #}
-        <table class="table" style="width: 70%; margin: 0 auto">
-            <thead class="thead-dark">
+    {# Table sits OUTSIDE the main form: each remove button gets its own tiny form #}
+    <div class="results-table-wrap table-responsive">
+        <table class="table table-hover align-middle mb-0 results-table">
+            <thead class="table-light">
                 <tr>
-                    <td>{{ 'tag.results'|trans }}</td>
-                    <td>{{ 'amount.results'|trans }}</td>
-                    <td>{{ 'exclude_tag'|trans }}</td>
+                    <th scope="col">{{ 'tag.results'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'amount.results'|trans }}</th>
+                    <th scope="col" class="text-end">{{ 'exclude_tag'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in rows %}
                     <tr>
-                        <td>{{ row.tag }}</td>
-                        <td>{{ row.count }}</td>
-                        <td>
+                        <td class="fw-medium">{{ row.tag }}</td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill text-bg-primary">{{ row.count }}</span>
+                        </td>
+                        <td class="text-end">
                             <form method="post">
                                 <input type="hidden" name="remove" value="{{ row.tag }}">
-                                <button type="submit" class="btn btn-link p-0">{{ 'exclude.results'|trans }}</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger">{{ 'exclude.results'|trans }}</button>
                             </form>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
 
-        <div class="separator"></div>
+    <div class="separator"></div>
 
-        {# Scrape form: only the tag input and its button #}
-        <form method="post">
-            <div class="form-floating">
-                <h2>{{ "tags.results"|trans }}</h2>
-            </div>
+    {# Scrape form: only the tag input and its button #}
+    <form method="post">
+        <h2 class="results-heading">{{ "tags.results"|trans }}</h2>
 
-            <div class="form-floating mb-3">
-                <input type="text" name="tag" id="tag" class="form-control" placeholder="{{ 'Please input the tag you wish to scrape'|trans }}">
-                <label for="tag">{{ 'label.results'|trans }}</label>
-            </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="tag" id="tag" class="form-control" placeholder="{{ 'Please input the tag you wish to scrape'|trans }}">
+            <label for="tag">{{ 'label.results'|trans }}</label>
+        </div>
 
-            <input type="submit" value="{{ 'more.results'|trans }}" name="scrape" class="btn btn-primary w-100 py-2">
-        </form>
+        <input type="submit" value="{{ 'more.results'|trans }}" name="scrape" class="btn btn-primary btn-lg w-100">
+    </form>
 
-        <div class="separator"></div>
+    <div class="separator"></div>
 
-        {# Export section #}
-
-        <div class="row g-3 mb-3">
-            <div class="col-12 col-md-6">
-                <div class="card h-100 border-success shadow-sm">
-                    <div class="card-body d-flex flex-column text-center">
-                        <div class="export-icon text-success mb-2">{ }</div>
-                        <h3 class="h5 card-title">JSON</h3>
-                        <p class="card-text text-muted small flex-grow-1">{{ 'satisfaction.results'|trans }}</p>
-                        <a href="{{ path('app_export_json') }}" class="btn btn-success w-100 py-2 mt-2">{{ 'json.results'|trans }}</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <div class="card h-100 border-info shadow-sm">
-                    <div class="card-body d-flex flex-column text-center">
-                        <div class="export-icon text-info mb-2">&lt;/&gt;</div>
-                        <h3 class="h5 card-title">HTML</h3>
-                        <p class="card-text text-muted small flex-grow-1">{{ 'html.results'|trans }}</p>
-                        <a href="{{ path('app_export_html') }}" class="btn btn-info w-100 py-2 mt-2">{{ 'html_download.results'|trans }}</a>
-                    </div>
+    {# Export section #}
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="card h-100 border-success shadow-sm">
+                <div class="card-body d-flex flex-column text-center">
+                    <div class="export-icon text-success mb-2">{ }</div>
+                    <h3 class="h5 card-title">JSON</h3>
+                    <p class="card-text text-muted small flex-grow-1">{{ 'satisfaction.results'|trans }}</p>
+                    <a href="{{ path('app_export_json') }}" class="btn btn-success w-100 py-2 mt-2">{{ 'json.results'|trans }}</a>
                 </div>
             </div>
         </div>
 
-        <a href="{{ path('app_main_menu') }}" class="btn btn-danger w-100 py-2">{{ 'menu.results'|trans }}</a>
-    </main>
-</div>
+        <div class="col-12 col-md-6">
+            <div class="card h-100 border-info shadow-sm">
+                <div class="card-body d-flex flex-column text-center">
+                    <div class="export-icon text-info mb-2">&lt;/&gt;</div>
+                    <h3 class="h5 card-title">HTML</h3>
+                    <p class="card-text text-muted small flex-grow-1">{{ 'html.results'|trans }}</p>
+                    <a href="{{ path('app_export_html') }}" class="btn btn-info w-100 py-2 mt-2">{{ 'html_download.results'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ path('app_main_menu') }}" class="btn btn-outline-secondary w-100 py-2">{{ 'menu.results'|trans }}</a>
+</section>
 {% endblock %}

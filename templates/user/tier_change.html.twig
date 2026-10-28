@@ -2,19 +2,22 @@
 
 {% block title %}{{ 'change_tier.user'|trans }}{% endblock %}
 
-<h1>{{ 'change_tier.user'|trans }}</h1>
+{% block body %}
+    <section class="form-panel">
+        <h1 class="form-panel-title">{{ 'change_tier.user'|trans }}</h1>
 
-<form method="POST" action="{{ path('app_user_tier'), {'username':username} }}">
-    <p>
-        {% if  tier === 'ROLE_FREE'%} {{ 'free_message.user'|trans}} {% endif %}
-        {% elseif tier === 'ROLE_PREMIUM' %} {{ 'premium_message.user'|trans}} {% endif %}
-    </p>
-    <p>
-        {% if tier === 'ROLE_FREE' %} {{ 'change_tier_free_question.user'|trans}} {% endif %}
-        {% elseif tier === 'ROLE_PREMIUM' %} {{ 'change_tier_premium_question.user'|trans}} {% endif %}
-    </p>
-    <button>
-        {% if tier === 'ROLE_FREE' %} {{ 'change_tier_free_button.user'|trans}} {% endif %}
-        {% if tier === 'ROLE_PREMIUM' %} {{ 'change_tier_premium_button.user'|trans}} {% endif %}
-    </button>
-</form>
+        <form method="post" action="{{ path('app_user_tier', {'username': username}) }}">
+            {% if tier == 'ROLE_FREE' %}
+                <div class="alert alert-info">{{ 'free_message.user'|trans }}</div>
+                <p class="fw-semibold">{{ 'change_tier_free_question.user'|trans }}</p>
+                <button type="submit" class="btn btn-warning w-100 py-2">{{ 'change_tier_free_button.user'|trans }}</button>
+            {% elseif tier == 'ROLE_PREMIUM' %}
+                <div class="alert alert-info">{{ 'premium_message.user'|trans }}</div>
+                <p class="fw-semibold">{{ 'change_tier_premium_question.user'|trans }}</p>
+                <button type="submit" class="btn btn-warning w-100 py-2">{{ 'change_tier_premium_button.user'|trans }}</button>
+            {% endif %}
+        </form>
+
+        <a href="{{ path('app_user_show', {'username': username}) }}" class="btn btn-outline-secondary w-100 py-2 mt-2">{{ 'profile.menu'|trans }}</a>
+    </section>
+{% endblock %}
