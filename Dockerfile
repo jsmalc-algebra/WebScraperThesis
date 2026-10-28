@@ -1,5 +1,5 @@
 # ---------- Stage 1: PHP-FPM app ----------
-FROM php:8.4-fpm as PHP
+FROM php:8.4-fpm as php
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -23,9 +23,10 @@ ENV APP_DEBUG=0
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN pecl install apcu && docker-php-ext-enable apcu
 
-# Compile hashed assets into public/assets
+
+# Download vendor JS (gitignored), then compile hashed assets
+RUN APP_SECRET=build-only php bin/console importmap:install
 RUN APP_SECRET=build-only php bin/console asset-map:compile
-RUN chown -R www-data:www-data /var/www
 
 # Entrypoint: wait for db, run migrations, seed admin user, then start php-fpm
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
