@@ -1,5 +1,5 @@
 # ---------- Stage 1: PHP-FPM app ----------
-FROM php:8.4-fpm
+FROM php:8.4-fpm as PHP
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
