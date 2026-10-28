@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.7.5",
         "phpdocumentor/reflection-docblock": "^6.0",
@@ -101,7 +102,6 @@
     },
     "require-dev": {
         "dbrekelmans/bdi": "^1.4",
-        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "phpunit/phpunit": "^13.4.3",
         "symfony/browser-kit": "8.1.*",
         "symfony/css-selector": "8.1.*",
