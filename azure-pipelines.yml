@@ -19,7 +19,7 @@ stages:
       jobs:
           - job: Test
             pool:
-                vmImage: ubuntu-24.04
+                vmImage: ubuntu-latest
             services:
                 mysql:
                     image: mysql:8.0
@@ -68,7 +68,7 @@ stages:
       jobs:
           - job: PantherTest
             pool:
-                vmImage: ubuntu-24.04
+                vmImage: ubuntu-latest
             services:
                 mysql:
                     image: mysql:8.0
@@ -134,7 +134,7 @@ stages:
       jobs:
           - job: BuildAndPush
             pool:
-                vmImage: ubuntu-24.04
+                vmImage: ubuntu-latest
             steps:
                 -   task: Docker@2
                     displayName: 'Build PHP image'
