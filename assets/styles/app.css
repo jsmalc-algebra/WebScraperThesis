@@ -567,3 +567,35 @@ button:focus-visible {
         padding: 1.25rem 1rem;
     }
 }
+
+/* Back button that sits beside a .form-panel: same width, same centre line */
+.form-back {
+    width: 100%;
+    max-width: 36rem;
+    margin: 1rem auto;
+}
+
+/* Page heading that sits above a .form-panel: same width, same centre line */
+.form-page-title {
+    width: 100%;
+    max-width: 36rem;
+    margin: 0.5rem auto 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+}
+
+/* Title on the left, primary action on the right (used inside .log-page) */
+.page-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.log-page .page-head h1 {
+    margin: 0;
+}

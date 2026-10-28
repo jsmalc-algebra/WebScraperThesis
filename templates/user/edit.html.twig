@@ -3,9 +3,11 @@
 {% block title %}{{ 'edit.user'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'edit.user'|trans }}</h1>
+    <h1 class="form-page-title">{{ 'edit.user'|trans }}</h1>
 
     {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_user_show',{'username': user.username}) }}" class="btn btn-secondary">{{ 'back_to_profile.user'|trans }}</a>
+    <div class="form-back">
+        <a href="{{ path('app_user_show', {'username': user.username}) }}" class="btn btn-outline-secondary w-100 py-2">{{ 'back_to_profile.user'|trans }}</a>
+    </div>
 {% endblock %}

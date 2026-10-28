@@ -2,35 +2,47 @@
 
 {% block title %}{{ 'index.user'|trans }}{% endblock %}
 
+{# Reuses the log page's panel + table styles (.log-page, .log-table-wrap, .log-table) #}
 {% block body %}
-    <h1>{{ 'index.user'|trans }}</h1>
+    <section class="log-page">
+        <div class="page-head">
+            <h1>{{ 'index.user'|trans }}</h1>
+            <a href="{{ path('app_user_new') }}" class="btn btn-primary">{{ 'new.user'|trans }}</a>
+        </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>{{ 'username.user'|trans }}</th>
-            <th>{{ 'roles.user'|trans }}</th>
-            <th>{{ 'profile.user'|trans }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'username': user.username}) }}">{{ 'goto_profile.user'|trans }}</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">{{ 'no_records.user' }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_user_new') }}" class="btn btn-primary">{{ 'new.user'|trans }}</a>
+        <div class="log-table-wrap">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">{{ 'username.user'|trans }}</th>
+                        <th scope="col">{{ 'roles.user'|trans }}</th>
+                        <th scope="col">{{ 'profile.user'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td class="log-num">{{ user.id }}</td>
+                            <td class="log-nowrap fw-semibold">{{ user.username }}</td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for role in user.roleEnums %}
+                                        <span class="badge rounded-pill text-bg-primary">{{ role|trans }}</span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="log-nowrap">
+                                <a href="{{ path('app_user_show', {'username': user.username}) }}">{{ 'goto_profile.user'|trans }}</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="log-empty">{{ 'no_records.user'|trans }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 {% endblock %}

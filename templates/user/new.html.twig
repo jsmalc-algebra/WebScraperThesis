@@ -3,9 +3,11 @@
 {% block title %}{{ 'new.user'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'new.user'|trans }}</h1>
+    <h1 class="form-page-title">{{ 'new.user'|trans }}</h1>
 
     {{ include('user/_form.html.twig') }}
 
-    <a href="{{ path('app_user_index') }}" class="btn btn-secondary">{{ 'index_return.user'|trans }}</a>
+    <div class="form-back">
+        <a href="{{ path('app_user_index') }}" class="btn btn-outline-secondary w-100 py-2">{{ 'index_return.user'|trans }}</a>
+    </div>
 {% endblock %}
