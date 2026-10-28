@@ -94,9 +94,13 @@ final class UserController extends AbstractController
 
             $entityManager->flush();
 
-        $this->userEditLogger($form, $user, $oldUsername);
+            $this->userEditLogger($form, $user, $oldUsername);
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', [
+                'username' => $user->getUsername(),
+            ],
+                Response::HTTP_SEE_OTHER
+            );
         }
 
         return $this->render('user/edit.html.twig', [
