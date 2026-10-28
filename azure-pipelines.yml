@@ -9,7 +9,6 @@ variables:
     imageRepository: 'thesis-scraper'
     dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
     tag: '$(Build.BuildId)'
-    webserverDockerfilePath: '$(Build.SourcesDirectory)/docker/nginx/Dockerfile'
     webserverImageRepository: 'thesis-scraper-webserver'
 
 stages:
@@ -137,25 +136,48 @@ stages:
             pool:
                 vmImage: ubuntu-latest
             steps:
-                - task: Docker@2
-                  displayName: 'Build and push Docker image'
-                  inputs:
-                      containerRegistry: '$(dockerRegistryServiceConnection)'
-                      repository: '$(imageRepository)'
-                      command: 'buildAndPush'
-                      Dockerfile: '$(dockerfilePath)'
-                      tags: |
-                          $(tag)
-                          latest
+                -   task: Docker@2
+                    displayName: 'Build PHP image'
+                    inputs:
+                        containerRegistry: '$(dockerRegistryServiceConnection)'
+                        repository: '$(imageRepository)'
+                        command: 'build'
+                        Dockerfile: '$(dockerfilePath)'
+                        buildContext: '$(Build.SourcesDirectory)'
+                        arguments: '--target php'
+                        tags: |
+                            $(tag)
+                            latest
 
-                - task: Docker@2
-                  displayName: 'Build and push webserver image'
-                  inputs:
-                      containerRegistry: '$(dockerRegistryServiceConnection)'
-                      repository: '$(webserverImageRepository)'
-                      command: 'buildAndPush'
-                      Dockerfile: '$(webserverDockerfilePath)'
-                      buildContext: '$(Build.SourcesDirectory)'
-                      tags: |
-                          $(tag)
-                          latest
+                -   task: Docker@2
+                    displayName: 'Push PHP image'
+                    inputs:
+                        containerRegistry: '$(dockerRegistryServiceConnection)'
+                        repository: '$(imageRepository)'
+                        command: 'push'
+                        tags: |
+                            $(tag)
+                            latest
+
+                -   task: Docker@2
+                    displayName: 'Build webserver image'
+                    inputs:
+                        containerRegistry: '$(dockerRegistryServiceConnection)'
+                        repository: '$(webserverImageRepository)'
+                        command: 'build'
+                        Dockerfile: '$(dockerfilePath)'
+                        buildContext: '$(Build.SourcesDirectory)'
+                        arguments: '--target web'
+                        tags: |
+                            $(tag)
+                            latest
+
+                -   task: Docker@2
+                    displayName: 'Push webserver image'
+                    inputs:
+                        containerRegistry: '$(dockerRegistryServiceConnection)'
+                        repository: '$(webserverImageRepository)'
+                        command: 'push'
+                        tags: |
+                            $(tag)
+                            latest
