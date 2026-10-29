@@ -10,6 +10,7 @@ use App\Security\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -115,20 +116,24 @@ final class UserController extends AbstractController
         Request $request,
         #[MapEntity(mapping: ['username' => 'username'])]
         User $user,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Security $security,
     ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $details = "USER DELETED: [".$user->getId()."-".$user->getUsername()."]";
-            if ($this->isGranted('ROLE_ADMIN')) {$this->logger->adminUserDelete($details);}
+            if ($this->isGranted('ROLE_ADMIN') && $security->getUser()!==$user) {$this->logger->adminUserDelete($details);}
             else {$this->logger->userSelfDelete($details);}
 
+            $response = $security->logout(false);
             $entityManager->remove($user);
             $entityManager->flush();
         }
 
-        if ($this->isGranted('ROLE_ADMIN')) {return $this->redirectToRoute('app_user_index');}
-        else {return $this->redirectToRoute('app_logout');}
+        if ($this->isGranted('ROLE_ADMIN') && $security->getUser()->getUserIdentifier()!==$user->getUsername()) {return $this->redirectToRoute('app_user_index');}
+        else {
+            return $response ?? $this->redirectToRoute('app_login');
+        }
     }
 
     #[Route('/{username}/tier', name: 'app_user_tier', methods: ['GET', 'POST'])]

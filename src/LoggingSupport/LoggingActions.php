@@ -61,9 +61,9 @@ readonly class LoggingActions implements LoggableActionsInterface
     {
         $this->logEvent(
             AuditLogAbstractBuilderFactory::createUserSelfEditAuditLogBuilder()
-            ->withDetails($details)
-            ->withUser($this->security->getUser())
-            ->getAuditLog()
+                ->withDetails($details)
+                ->withUser($this->security->getUser())
+                ->getAuditLog()
         );
     }
 
@@ -71,9 +71,9 @@ readonly class LoggingActions implements LoggableActionsInterface
     {
         $this->logEvent(
             AuditLogAbstractBuilderFactory::createUserTierChangeAuditLogBuilder()
-            ->withDetails($details)
-            ->withUser($this->security->getUser())
-            ->getAuditLog()
+                ->withDetails($details)
+                ->withUser($this->security->getUser())
+                ->getAuditLog()
         );
     }
 
@@ -81,8 +81,9 @@ readonly class LoggingActions implements LoggableActionsInterface
     {
         $this->logEvent(
             AuditLogAbstractBuilderFactory::createUserSelfDeleteAuditLogBuilder()
-            ->withDetails($details)
-            ->getAuditLog()
+                ->withUser($this->security->getUser())
+                ->withDetails($details)
+                ->getAuditLog()
         );
     }
 
@@ -90,9 +91,9 @@ readonly class LoggingActions implements LoggableActionsInterface
     {
         $this->logEvent(
             AuditLogAbstractBuilderFactory::createAdminUserCreationAuditLogBuilder()
-            ->withDetails($details)
-            ->withUser($this->security->getUser())
-            ->getAuditLog()
+                ->withDetails($details)
+                ->withUser($this->security->getUser())
+                ->getAuditLog()
         );
     }
 

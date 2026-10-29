@@ -31,11 +31,11 @@ class AuditLog
     private ?int $originalUserId = null; // Backup for reading after user deletion
 
     /**
-     * @param AuditEvent|null $event
-     * @param User|null $user
+     * @param AuditEvent $event
+     * @param User $user
      * @param string|null $details
      */
-    public function __construct(?AuditEvent $event, ?User $user, ?string $details)
+    public function __construct(AuditEvent $event, User $user, ?string $details)
     {
         $this->event = $event;
         $this->timetag =new \DateTimeImmutable();
