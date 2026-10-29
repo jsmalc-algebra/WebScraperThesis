@@ -23,13 +23,23 @@ final class ScrapeResultsController extends AbstractController
     public function index(Request $request): Response
     {
         $session = $request->getSession();
+
+        if ($request->query->getBoolean('premiumMode') && $this->isGranted('ROLE_PREMIUM')) {
+            $session->set('premium_mode', true); // Have the session remember we're in premium/render mode
+            return $this->redirectToRoute('app_scrape_results');
+            // And then drop it from the link so all the other loopbacks can work
+        }
+
+        $premium_mode = $session->get('premium_mode', false) && $this->isGranted('ROLE_PREMIUM');
         $link = $session->get('url');
-        $html = $this->fetcher->getHtml($link);
+        $html = $this->fetcher->getHtml($link,$premium_mode);
 
         if ($session->has('tags')) {$tags = TagList::fromArray($session->get('tags'));}
         else {$tags = TagList::defaults();}
 
         $scraper = new PageScraper($html,$link);
+
+        $useRenderWarningBox = $scraper->looksRendered();
 
         $newTag = $request->request->getString('tag');
         if ($newTag !== '' && $scraper->isValidSelector($newTag)) {
@@ -56,12 +66,14 @@ final class ScrapeResultsController extends AbstractController
             $rows[] = [
                 'tag'   => $tag,
                 'count' => $scraper->count($tag),
+                'useRenderWarningBox' => $useRenderWarningBox,
             ];
         }
 
         return $this->render('scrape_results/index.html.twig', [
             'rows' => $rows,
-            'title' => $scraper->title()
+            'title' => $scraper->title(),
+
         ]);
     }
 }

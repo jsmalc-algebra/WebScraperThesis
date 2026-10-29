@@ -25,6 +25,7 @@ final class URLInputController extends AbstractController
     #[Route('/scrape', name: 'URL_input')]
     public function index(Request $request,LoggingActions $logger): Response
     {
+        $request->getSession()->remove('premium_mode'); // With each new page we reset premium mode so it isn't abused
         $form = $this->createForm(LinkInputFormType::class);
 
         $form->handleRequest($request);

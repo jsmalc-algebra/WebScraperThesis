@@ -6,18 +6,18 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class PageFetcher
+final readonly class PageFetcher
 {
     public function __construct(
-        private readonly HttpClientInterface $http,
-        private readonly CacheItemPoolInterface $cache,
-        private readonly RobotsGuard $guard
+        private HttpClientInterface    $http,
+        private CacheItemPoolInterface $cache,
+        private RobotsGuard            $guard
     ) {}
 
     public function fetch(string $link): string
     {
         if (!$this->guard->isAllowed($link)) {
-            throw new AccessDeniedHttpException(); //TODO: Make this a custom exception
+            throw new AccessDeniedHttpException();
         }
 
         return $this->http->request('GET', $link, [
@@ -26,13 +26,19 @@ final class PageFetcher
         ])->getContent();
     }
 
-    function getHtml(string $link): string
+    function getHtml(string $link, bool $premium_mode = false): string
     {
-        $item = $this->cache->getItem('page_' . sha1($link));
+        $key = 'page_'.($premium_mode ? 'browser_' : 'http_'). sha1($link);
+        //2 keys depending on weather we fetch the page via regular crawler or Panther browser
+        $item = $this->cache->getItem($key);
 
         if ($item->isHit()) {
             $html = $item->get();
-        } else {
+        }
+        elseif ($premium_mode) {
+
+        }
+        else {
             $html = $this->fetch($link);
             $item->set($html);
             $item->expiresAfter(600);

@@ -13,6 +13,8 @@
         <p class="results-lead">{{ 'explanation.results'|trans }}</p>
     </header>
 
+    {% include 'scrape_results/_barren_notice.html.twig' %}
+
     {# Table sits OUTSIDE the main form: each remove button gets its own tiny form #}
     <div class="results-table-wrap table-responsive">
         <table class="table table-hover align-middle mb-0 results-table">
