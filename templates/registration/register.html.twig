@@ -3,20 +3,27 @@
 {% block title %}{{ 'register_prompt_regular.message'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'register_prompt_regular.message'|trans }}</h1>
+    {# Bootstrap 5 field styling, applied here so it works without a global form_themes setting #}
+    {% form_theme registrationForm 'bootstrap_5_layout.html.twig' %}
 
-    {{ form_errors(registrationForm) }}
+    <section class="form-panel">
+        <h1 class="form-panel-title">{{ 'register_prompt_regular.message'|trans }}</h1>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username, {
-            label: 'username.message'|trans
-        }) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'password.message'|trans
-        }) }}
+        {{ form_errors(registrationForm) }}
 
-        <button type="submit" class="btn">{{ 'register_prompt_regular.message'|trans }}</button>
-    {{ form_end(registrationForm) }}
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.username, {
+                label: 'username.message'|trans
+            }) }}
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'password.message'|trans
+            }) }}
 
-    <a href="{{ path('app_login') }}" class="btn btn-secondary">{{ 'register_existing_acc.message'|trans }}</a>
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">{{ 'register_prompt_regular.message'|trans }}</button>
+        {{ form_end(registrationForm) }}
+
+        <div class="separator"></div>
+
+        <a href="{{ path('app_login') }}" class="btn btn-outline-secondary w-100 py-2">{{ 'register_existing_acc.message'|trans }}</a>
+    </section>
 {% endblock %}

@@ -1,32 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}{{ 'sign_in_request.message'|trans }}{% endblock %}
 
 {% block body %}
-    <form method="post">
+    <section class="form-panel">
+        <h1 class="form-panel-title">{{ 'sign_in_request.message'|trans }}</h1>
+
         {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
 
         {% if app.user %}
-            <div class="mb-3">
+            <div class="alert alert-info">
                 {{ 'logged_in.message'|trans({'%username%': app.user.userIdentifier}) }}, <a href="{{ logout_path() }}">{{ 'logout.message'|trans }}</a>
             </div>
         {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">{{ 'sign_in_request.message'|trans}}</h1>
-        <label for="username">{{ 'username.message' |trans}}</label>
-        <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" required autofocus>
-        <label for="password">{{ 'password.message' |trans}}</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        <form method="post">
+            <div class="form-floating mb-3">
+                <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" placeholder="{{ 'username.message'|trans }}" autocomplete="username" required autofocus>
+                <label for="username">{{ 'username.message'|trans }}</label>
+            </div>
 
+            <div class="form-floating mb-3">
+                <input type="password" name="_password" id="password" class="form-control" placeholder="{{ 'password.message'|trans }}" autocomplete="current-password" required>
+                <label for="password">{{ 'password.message'|trans }}</label>
+            </div>
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            {{ 'sign_in.message'|trans }}
-        </button>
+            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-        <h1 class="h3 mb-3 font-weight-normal">{{ 'no_account.message'|trans}}</h1>
-        <a href="{{ path('app_register') }}" class="btn btn-lg btn-info">{{ 'register_prompt_caps.message'|trans }}</a>
-    </form>
+            <button class="btn btn-lg btn-primary w-100" type="submit">{{ 'sign_in.message'|trans }}</button>
+        </form>
+
+        <div class="separator"></div>
+
+        <p class="text-center text-muted mb-2">{{ 'no_account.message'|trans }}</p>
+        <a href="{{ path('app_register') }}" class="btn btn-outline-primary w-100 py-2">{{ 'register_prompt_caps.message'|trans }}</a>
+    </section>
 {% endblock %}
