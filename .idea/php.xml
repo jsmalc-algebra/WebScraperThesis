@@ -147,6 +147,8 @@
       <path value="$PROJECT_DIR$/vendor/php-webdriver/webdriver" />
       <path value="$PROJECT_DIR$/vendor/symfony/panther" />
       <path value="$PROJECT_DIR$/vendor/dbrekelmans/bdi" />
+      <path value="$PROJECT_DIR$/vendor/promphp/prometheus_client_php" />
+      <path value="$PROJECT_DIR$/vendor/artprima/prometheus-metrics-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.4" />
