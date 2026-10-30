@@ -4,9 +4,9 @@ namespace App\PrometheusMetrics;
 
 use Prometheus\CollectorRegistry;
 
-class ScrapeMetrics
+readonly class ScrapeMetrics
 {
-    public function __construct(private readonly CollectorRegistry $registry){}
+    public function __construct(private CollectorRegistry $registry){}
 
     public function requestScrape(): void
     {

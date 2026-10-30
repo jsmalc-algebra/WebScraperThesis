@@ -3,7 +3,6 @@
 namespace App\PrometheusMetrics;
 
 use App\Repository\UserRepository;
-use App\SchedulerMessages\RefreshUserNumberGauges;
 use Prometheus\CollectorRegistry;
 
 
