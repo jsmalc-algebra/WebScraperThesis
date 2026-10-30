@@ -3,7 +3,6 @@
 namespace App\Scraper;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Panther\Client as PantherClient;
 
@@ -27,12 +26,9 @@ final readonly class BrowserFactory
         // Remote browser: docker-compose service or Azure sidecar
         if ($this->seleniumUrl) {
             $options = new ChromeOptions();
-            $options->addArguments($arguments);
+            $options->addArguments([...$arguments, '--disable-dev-shm-usage']);
 
-            $capabilities = DesiredCapabilities::chrome();
-            $capabilities->setCapability(ChromeOptions::CAPABILITY_W3C, $options);
-
-            return PantherClient::createSeleniumClient($this->seleniumUrl, $capabilities);
+            return PantherClient::createSeleniumClient($this->seleniumUrl, $options->toCapabilities());
         }
 
         // Local Firefox: Panther starts and stops it for you
