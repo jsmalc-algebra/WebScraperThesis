@@ -3,6 +3,7 @@ namespace App\Scraper;
 
 
 use App\CustomExceptions\PageFetchFailedException;
+use App\PrometheusMetrics\ScrapeMetrics;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -15,6 +16,7 @@ final readonly class PageFetcher
         private CacheItemPoolInterface $cache,
         private RobotsGuard            $guard,
         private BrowserFactory         $browserFactory,
+        private ScrapeMetrics         $scrapeMetrics,
     ) {}
 
     public function fetch(string $link,bool $premium_mode=false): string
@@ -24,8 +26,11 @@ final readonly class PageFetcher
         }
 
         elseif ($premium_mode) {
+            $this->scrapeMetrics->headlessScrape();
             return $this->fetchWithBrowser($link);
         }
+
+        else {$this->scrapeMetrics->requestScrape();}
 
         return $this->http->request('GET', $link, [
             'headers' => ['User-Agent' => BotIdentity::USER_AGENT],
@@ -35,9 +40,7 @@ final readonly class PageFetcher
 
     function getHtml(string $link, bool $premium_mode = false): string
     {
-        dump($premium_mode);
         $key = 'page_'.($premium_mode ? 'browser_' : 'http_'). sha1($link);
-        dump($key);
         //2 keys depending on weather we fetch the page via regular crawler or Panther browser
         $item = $this->cache->getItem($key);
 

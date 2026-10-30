@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\LoggingSupport\LoggingActions;
+use App\PrometheusMetrics\UserTierSwitchMetrics;
 use App\Repository\UserRepository;
 use App\Form\UserType;
 use App\Security\UserVoter;
@@ -142,7 +143,8 @@ final class UserController extends AbstractController
         Request $request,
         #[MapEntity(mapping: ['username' => 'username'])]
         User $user,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserTierSwitchMetrics $userTierSwitchMetrics
     ): Response
     {
         $tier = array_values(array_diff($user->getRoles(), ['ROLE_USER']))[0];
@@ -151,10 +153,12 @@ final class UserController extends AbstractController
             if ($tier === 'ROLE_FREE') {
                 $user->setRoles(['ROLE_PREMIUM']);
                 $this->logger->userTierChange("USER TIER CHANGED TO PREMIUM");
+                $userTierSwitchMetrics->userTierUpgrade();
             }
             else {
                 $user->setRoles(['ROLE_FREE']);
                 $this->logger->userTierChange("USER TIER CHANGED TO FREE");
+                $userTierSwitchMetrics->userTierDowngrade();
             }
 
             $entityManager->flush();
