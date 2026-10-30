@@ -17,7 +17,7 @@ final readonly class PageFetcher
         private BrowserFactory         $browserFactory,
     ) {}
 
-    public function fetch(string $link,bool $premium_mode): string
+    public function fetch(string $link,bool $premium_mode=false): string
     {
         if (!$this->guard->isAllowed($link)) {
             throw new AccessDeniedHttpException();
