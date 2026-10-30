@@ -43,6 +43,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
+    public function countByRole(string $role): int
+    {
+        $sql = 'SELECT COUNT(id) FROM user WHERE JSON_CONTAINS(roles, :role)';
+
+        return (int) $this->getEntityManager()
+            ->getConnection()
+            ->fetchOne($sql, ['role' => json_encode($role)]);
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

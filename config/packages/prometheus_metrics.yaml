@@ -16,6 +16,11 @@ artprima_prometheus_metrics:
     # used to enable console metrics
     #enable_console_metrics: false
 
+when@dev:
+    artprima_prometheus_metrics:
+        storage: in_memory
+
+
 when@test:
     artprima_prometheus_metrics:
         storage: in_memory
