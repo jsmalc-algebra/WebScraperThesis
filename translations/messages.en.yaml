@@ -44,7 +44,8 @@ barren_text.results: "Our scraper found very little content here. This usually m
 barren_free.results: "Premium accounts can use our headless browser, which loads pages like a real browser and can read JavaScript-heavy sites."
 upgrade.results: "Upgrade your tier"
 barren_premium.results: "As a Premium user, you can use our headless browser to load this page fully, JavaScript included."
-render_browser.results: "Still very little content"
+render_browser.results: "Render with headless browser"
+barren_browser_title.results: "Still very little content"
 barren_browser_text.results: "Even after loading the page in a browser, we found very little. It may be genuinely empty, require a login, or block automated visitors."
 # Error text
 robots.error: "This site's robots.txt does not allow scraping that page."

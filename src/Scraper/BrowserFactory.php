@@ -35,8 +35,8 @@ final readonly class BrowserFactory
             return PantherClient::createSeleniumClient($this->seleniumUrl, $capabilities);
         }
 
-        // Local Chrome: Panther starts and stops it for you
-        return PantherClient::createChromeClient(null, $arguments, [
+        // Local Firefox: Panther starts and stops it for you
+        return PantherClient::createFirefoxClient(__DIR__.'/../../drivers/geckodriver.exe', $arguments, [
             'request_timeout_in_ms' => 30000,
         ]);
     }

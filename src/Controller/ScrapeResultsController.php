@@ -39,7 +39,7 @@ final class ScrapeResultsController extends AbstractController
 
         $scraper = new PageScraper($html,$link);
 
-        $useRenderWarningBox = $scraper->looksRendered();
+        $useRenderWarningBox = !$scraper->looksRendered();
 
         $newTag = $request->request->getString('tag');
         if ($newTag !== '' && $scraper->isValidSelector($newTag)) {
@@ -66,14 +66,14 @@ final class ScrapeResultsController extends AbstractController
             $rows[] = [
                 'tag'   => $tag,
                 'count' => $scraper->count($tag),
-                'useRenderWarningBox' => $useRenderWarningBox,
             ];
         }
 
         return $this->render('scrape_results/index.html.twig', [
             'rows' => $rows,
             'title' => $scraper->title(),
-
+            'useRenderWarningBox' => $useRenderWarningBox,
+            'premium_mode' => $premium_mode,
         ]);
     }
 }

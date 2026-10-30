@@ -65,13 +65,16 @@ final class ExportController extends AbstractController
 
     private function load(Request $request): array|Response
     {
-        $url = $request->getSession()->get('url');
+        $session = $request->getSession();
+        $url = $session->get('url');
 
         if (!$url) {
             return $this->redirectToRoute('URL_input');   //TODO: Make this redirect to an error page
         }
 
-        $html = $this->fetcher->getHtml($url);
+        $premium_mode = $session->get('premium_mode', false) && $this->isGranted('ROLE_PREMIUM');
+
+        $html = $this->fetcher->getHtml($url, $premium_mode);
 
         return [
             'html'    => $html,

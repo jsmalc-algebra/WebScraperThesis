@@ -35,7 +35,9 @@ final readonly class PageFetcher
 
     function getHtml(string $link, bool $premium_mode = false): string
     {
+        dump($premium_mode);
         $key = 'page_'.($premium_mode ? 'browser_' : 'http_'). sha1($link);
+        dump($key);
         //2 keys depending on weather we fetch the page via regular crawler or Panther browser
         $item = $this->cache->getItem($key);
 
