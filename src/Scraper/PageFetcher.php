@@ -2,22 +2,29 @@
 namespace App\Scraper;
 
 
+use App\CustomExceptions\PageFetchFailedException;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\Panther\Client as PantherClient;
 
 final readonly class PageFetcher
 {
     public function __construct(
         private HttpClientInterface    $http,
         private CacheItemPoolInterface $cache,
-        private RobotsGuard            $guard
+        private RobotsGuard            $guard,
+        private BrowserFactory         $browserFactory,
     ) {}
 
-    public function fetch(string $link): string
+    public function fetch(string $link,bool $premium_mode): string
     {
         if (!$this->guard->isAllowed($link)) {
             throw new AccessDeniedHttpException();
+        }
+
+        elseif ($premium_mode) {
+            return $this->fetchWithBrowser($link);
         }
 
         return $this->http->request('GET', $link, [
@@ -35,11 +42,8 @@ final readonly class PageFetcher
         if ($item->isHit()) {
             $html = $item->get();
         }
-        elseif ($premium_mode) {
-
-        }
         else {
-            $html = $this->fetch($link);
+            $html = $this->fetch($link, $premium_mode);
             $item->set($html);
             $item->expiresAfter(600);
             $this->cache->save($item);
@@ -47,4 +51,43 @@ final readonly class PageFetcher
 
         return $html;
     }
-}
+
+    private function fetchWithBrowser(string $link): string
+    {
+        $client = null;
+
+        try {
+            $client = $this->browserFactory->create(); //Start the browser
+            $client->request('GET', $link); //Open the URL so the JS runs
+            $this->waitUntilSettled($client); //Wait until page stops changing
+            return $client->getPageSource(); //Return the page after JS runs, once again as an HTML string
+        } catch (\Throwable $exception) {
+            throw new PageFetchFailedException($link, $exception);
+        } finally {
+            $client?->quit(); //Make sure the browser is always closed in the end
+        }
+    }
+
+    private function waitUntilSettled(PantherClient $client, int $maxSeconds = 10): void
+    {
+        $deadline = microtime(true) + $maxSeconds;
+        $last = -1;
+        $stable = 0;
+
+        while (microtime(true) < $deadline) {
+            $length = (int)$client->executeScript(
+                'return document.body ? document.body.innerText.length : 0;'
+            );
+
+            $stable = ($length === $last) ? $stable + 1 : 0;
+
+            if ($stable >= 3) {
+                return;
+            }
+
+            $last = $length;
+            usleep(500_000);
+        }
+    }
+
+    }
