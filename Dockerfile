@@ -24,7 +24,9 @@ ENV APP_DEBUG=0
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-scripts
-RUN pecl install apcu && docker-php-ext-enable apcu
+RUN pecl channel-update pecl.php.net \
+    && pecl install apcu \
+    && docker-php-ext-enable apcu
 
 
 # Download vendor JS (gitignored), then compile hashed assets
