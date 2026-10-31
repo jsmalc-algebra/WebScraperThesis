@@ -3,7 +3,10 @@ FROM php:8.4-fpm AS php
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev zip unzip default-mysql-client
+    git curl libpng-dev libonig-dev libxml2-dev \
+    libzip-dev zip unzip default-mysql-client \
+    && docker-php-ext-install zip \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions Symfony needs
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
